@@ -91,9 +91,12 @@ Key pattern: **Ralph Loop** (EXPLORE → UPDATE → VALIDATE)
 ### Tool (Connectors)
 **Implemented:**
 - GitHub (`gh` CLI)
+- ClickUp (MCP server via `.mcp.json`)
 
 **Planned:**
-- Slack, ClickUp, Redshift, Honeycomb, Splunk
+- Slack (pending official MCP release), Redshift, Honeycomb, Splunk
+
+**Setup:** Run `/install` for onboarding or see `.env.example` for required credentials.
 
 ### Prompt (Skills)
 ```
@@ -155,10 +158,11 @@ wemoney-orchestrator/
 ## Workflow
 
 ### Starting a Session
-1. Run `/prime` to load context
-2. Check `git status` and recent commits
-3. Review task list or plan
-4. Confirm permission level for planned work
+1. Run `/install` if first time (checks tools, env vars, MCP connections)
+2. Run `/prime` to load context
+3. Check `git status` and recent commits
+4. Review task list or plan
+5. Confirm permission level for planned work
 
 ### During Work
 1. Commit at meaningful checkpoints

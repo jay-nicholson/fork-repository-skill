@@ -59,10 +59,12 @@ The orchestrator coordinates agents that maintain 50+ services. For agents to re
 - Offline validation without API
 - Pre-commit hooks
 
-### Phase 2C: Agent Integration (Future)
+### Phase 2C: Agent Integration (In Progress)
 - `/sync-catalogue` command for agents
 - Semantic diff reporting (not just file diff)
 - Auto-enrichment of commit messages
+- **MCP Connectors**: ClickUp integration via `.mcp.json`
+- **`/install` command**: Engineering onboarding automation
 
 ### Phase 2D: Entity Enrichment Layer (Future)
 - Merge sources + derivations into entity definitions
