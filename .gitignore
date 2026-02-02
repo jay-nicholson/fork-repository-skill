@@ -140,3 +140,6 @@ temp/
 
 # macOS
 .DS_Store
+
+# Orchestrator worktrees (cloned service repos)
+worktrees/
