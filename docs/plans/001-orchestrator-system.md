@@ -28,8 +28,6 @@ Decision trail for WeMoney Agent Orchestration System:
 References:
 - Palantir Foundry ontology patterns
 - Jessica Talisman on semantic layers vs ontologies
-
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 ```
 
 ### Why This Matters
