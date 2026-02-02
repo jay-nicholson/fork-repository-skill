@@ -1,76 +1,124 @@
 # Ontology - Local Cache
 
-This directory contains a **synced local cache** of the WeMoney data catalogue from `we-money/brightmatch-data-catalogue`.
+This directory contains a **synced local cache** of the WeMoney data catalogue from `we-money/brightmatch-data-catalogue`, plus an enrichment layer for agent consumption.
 
-## Source of Truth
-
-**Repository:** `we-money/brightmatch-data-catalogue`
-
-| Content | Source Location | Local Location |
-|---------|-----------------|----------------|
-| Models | `public/data-catalogue/models/` | `ontology/objects/` |
-| Derivations | `public/data-catalogue/derivations/` | `ontology/derivations/` |
-| Links | (future) | `ontology/links/` |
-| Actions | (future kinetic layer) | `ontology/actions/` |
-
-## Closed-Loop Workflow
+## Architecture
 
 ```
-┌──────────────────────────────────────────────────────────┐
-│                    CLOSED LOOP                           │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  1. PULL (sync-data-catalogue.sh)                        │
-│     Remote → Local cache                                 │
-│     Updates .sync-manifest.json                          │
-│                                                          │
-│  2. EDIT (agent or manual)                               │
-│     Modify local JSON files                              │
-│     Agent adds semantic context                          │
-│                                                          │
-│  3. VALIDATE (validate-local.sh)                         │
-│     JSON syntax check                                    │
-│     API validation if available                          │
-│                                                          │
-│  4. PUSH (push-changes.sh)                               │
-│     Creates PR to source repo                            │
-│     Requires BATCH_CONFIRM                               │
-│                                                          │
-│  5. PULL (after merge)                                   │
-│     Loop closes                                          │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                     ONTOLOGY LAYERS                             │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   ENTITIES (enriched)          ← Agents interact here           │
+│   └─ member.json               ← Source + derivations combined  │
+│   └─ loan_application.json                                      │
+│   └─ ...                                                        │
+│                                                                 │
+│   ─────────────────────────────────────────────────────────     │
+│                                                                 │
+│   SOURCES (raw)                ← Synced from data catalogue     │
+│   └─ member/_root.json         ← DB table schema                │
+│   └─ loan_application/_root.json                                │
+│                                                                 │
+│   DERIVATIONS (raw)            ← Synced from data catalogue     │
+│   └─ serviceability/           ← Computed transformations       │
+│   └─ extraction/                                                │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-## Sync Commands
+## Directory Structure
 
-```bash
-# Full sync (force re-download all)
-./scripts/sync/sync-data-catalogue.sh --full
+| Directory | Purpose | Maintained By |
+|-----------|---------|---------------|
+| `sources/` | Raw DB table schemas (synced) | `sync-data-catalogue.sh` |
+| `derivations/` | Raw computed transformations (synced) | `sync-data-catalogue.sh` |
+| `entities/` | Enriched objects (source + derivations merged) | Agent + human |
+| `links/` | Relationships between entities (future) | Agent + human |
+| `actions/` | Kinetic layer operations (future) | Agent + human |
 
-# Incremental sync (skip if in sync)
-./scripts/sync/sync-data-catalogue.sh --incremental
+## The Two Layers
 
-# Check drift without syncing
-./scripts/sync/check-drift.sh
+### Raw Layer (synced automatically)
 
-# Validate local files
-./scripts/sync/validate-local.sh
+**Sources** are DB table schemas from various services:
+- `member/` → usermanager database
+- `loan_application/` → brightmatch database
+- `transaction/` → categorizer database
+- etc.
 
-# Push local changes as PR (BATCH_CONFIRM)
-./scripts/sync/push-changes.sh
+**Derivations** are computed transformations:
+- `extraction/` → Extract fields from sources
+- `selection/` → Filter and select records
+- `serviceability/` → Calculate net capacity
+- etc.
+
+### Enriched Layer (agent-maintained)
+
+**Entities** combine sources + derivations into coherent business objects:
+
+```json
+// entities/member.json (conceptual)
+{
+  "name": "member",
+  "description": "A WeMoney member with all derived attributes",
+  "source": {
+    "table": "sources/member/_root.json",
+    "service": "usermanager"
+  },
+  "fields": {
+    "id": { "type": "uuid", "source": "raw" },
+    "fully_onboarded_at": { "type": "datetime", "source": "raw", "aliases": ["FOBM"] },
+    "primary_income": {
+      "type": "money",
+      "source": "derived",
+      "derivation": "extraction/detected_primary_income.json",
+      "fallback": "extraction/declared_primary_income.json"
+    },
+    "net_capacity": {
+      "type": "money",
+      "source": "derived",
+      "derivation": "serviceability/net_capacity.json",
+      "depends_on": ["total_income", "total_expenses"]
+    }
+  }
+}
 ```
+
+This gives agents a single coherent object to reason about, rather than tracing through derivation chains.
+
+## Sync Workflow (Closed Loop)
+
+```
+PULL → EDIT → VALIDATE → PUSH → PULL
+```
+
+### Commands
+
+| Command | Purpose | Permission |
+|---------|---------|------------|
+| `./scripts/sync/sync-data-catalogue.sh --full` | Full sync from remote | SAFE |
+| `./scripts/sync/sync-data-catalogue.sh --incremental` | Skip if in sync | SAFE |
+| `./scripts/sync/check-drift.sh` | Check if local has drifted | SAFE |
+| `./scripts/sync/validate-local.sh` | Validate local JSON | SAFE |
+| `./scripts/sync/push-changes.sh` | Create PR from local edits | BATCH_CONFIRM |
+
+### When to Sync
+
+1. **Starting a session** — Run `check-drift.sh` to see if updates available
+2. **Before editing ontology** — Ensure local cache is current
+3. **After pushing changes** — Pull to close the loop
+4. **Investigating data issues** — Fresh sync ensures accuracy
 
 ## Manifest
 
-The `.sync-manifest.json` file tracks sync state:
+The `.sync-manifest.json` tracks sync state:
 
 ```json
 {
   "source_repo": "we-money/brightmatch-data-catalogue",
   "source_commit": "abc123...",
   "synced_at": "2026-02-02T10:30:00Z",
-  "synced_by": "sync-data-catalogue.sh",
   "content": {
     "models": ["member", "loan_application", ...],
     "derivation_categories": ["serviceability", "filters", ...]
@@ -78,38 +126,17 @@ The `.sync-manifest.json` file tracks sync state:
 }
 ```
 
-## Directory Structure
+## Why This Structure?
 
-```
-ontology/
-├── README.md                    # This file
-├── objects/                     # Synced models (from models/)
-│   ├── member/
-│   │   └── _root.json
-│   ├── loan_application/
-│   │   └── _root.json
-│   └── ...
-├── derivations/                 # Synced derivations
-│   ├── serviceability/
-│   ├── filters/
-│   └── ...
-├── links/                       # (future: relationship definitions)
-└── actions/                     # (future: kinetic layer operations)
-```
-
-## Why Local Cache?
-
-1. **Agent Context** — Agents can read local files without API calls
-2. **Offline Work** — Edit without network dependency
-3. **Audit Trail** — Git tracks all changes
-4. **Validation** — Check before pushing to source
-5. **Semantic Understanding** — Agents can reason about the full ontology
+1. **Raw layer is deterministic** — Scripts sync it, no manual intervention
+2. **Enriched layer is semantic** — Agents maintain it with business understanding
+3. **Separation of concerns** — Source of truth stays clean, agent layer adds value
+4. **Audit trail** — Both layers tracked in git with context
 
 ## Permission Model
 
-| Operation | Permission | Script |
-|-----------|------------|--------|
-| Sync from remote | SAFE | `sync-data-catalogue.sh` |
-| Check drift | SAFE | `check-drift.sh` |
-| Validate local | SAFE | `validate-local.sh` |
-| Push to remote | BATCH_CONFIRM | `push-changes.sh` |
+| Operation | Permission | Tool |
+|-----------|------------|------|
+| Sync sources/derivations | SAFE | `sync-data-catalogue.sh` |
+| Edit entities | SAFE | Agent (local only) |
+| Push to source repo | BATCH_CONFIRM | `push-changes.sh` |

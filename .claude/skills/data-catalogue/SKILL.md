@@ -209,17 +209,30 @@ PULL → EDIT → VALIDATE → PUSH → PULL
 .claude/skills/data-catalogue/
 ├── .sync-manifest.json          # Sync state tracking
 ├── ontology/
-│   ├── objects/                 # Synced models
+│   ├── sources/                 # Synced DB table schemas
 │   │   ├── member/_root.json
 │   │   ├── loan_application/_root.json
 │   │   └── ...
-│   ├── derivations/             # Synced derivations
+│   ├── derivations/             # Synced computed transformations
 │   │   ├── serviceability/
+│   │   ├── extraction/
 │   │   └── ...
-│   ├── links/                   # (future)
-│   └── actions/                 # (future kinetic layer)
+│   ├── entities/                # Enriched objects (agent-maintained)
+│   │   └── (source + derivations merged)
+│   ├── links/                   # (future: relationships)
+│   └── actions/                 # (future: kinetic layer)
 └── docs/                        # Synced documentation
 ```
+
+### Two Layers
+
+**Raw Layer** (synced automatically):
+- `sources/` — DB table schemas from various services
+- `derivations/` — Computed transformations
+
+**Enriched Layer** (agent-maintained):
+- `entities/` — Combined source + derivations as coherent business objects
+- Agents reason about entities, not raw sources
 
 ### When to Sync
 

@@ -43,7 +43,7 @@ fi
 
 # --- Sync Models ---
 log "Syncing models..."
-mkdir -p "$LOCAL_PATH/ontology/objects"
+mkdir -p "$LOCAL_PATH/ontology/sources"
 
 MODELS=$(gh api repos/$REPO/contents/public/data-catalogue/models --jq '.[].name' 2>/dev/null || echo "")
 if [ -z "$MODELS" ]; then
@@ -51,11 +51,11 @@ if [ -z "$MODELS" ]; then
 else
     for model in $MODELS; do
         log "  $model"
-        mkdir -p "$LOCAL_PATH/ontology/objects/$model"
+        mkdir -p "$LOCAL_PATH/ontology/sources/$model"
 
         # Fetch _root.json
         gh api "repos/$REPO/contents/public/data-catalogue/models/$model/_root.json" \
-            --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/ontology/objects/$model/_root.json" 2>/dev/null || true
+            --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/ontology/sources/$model/_root.json" 2>/dev/null || true
 
         # Fetch nested files (if any)
         NESTED=$(gh api "repos/$REPO/contents/public/data-catalogue/models/$model" \
@@ -63,7 +63,7 @@ else
         for file in $NESTED; do
             if [ -n "$file" ]; then
                 gh api "repos/$REPO/contents/public/data-catalogue/models/$model/$file" \
-                    --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/ontology/objects/$model/$file" 2>/dev/null || true
+                    --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/ontology/sources/$model/$file" 2>/dev/null || true
             fi
         done
     done

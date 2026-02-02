@@ -67,7 +67,7 @@ ls -la worktrees/ 2>/dev/null | grep -v "^total" | tail -n +2 || echo "    (none
 echo ""
 echo "  Data catalogue:"
 echo "    Docs: $(ls .claude/skills/data-catalogue/docs/*.md 2>/dev/null | wc -l | tr -d ' ') files"
-echo "    Models: $(ls -d .claude/skills/data-catalogue/ontology/objects/*/ 2>/dev/null | wc -l | tr -d ' ') models"
+echo "    Sources: $(ls -d .claude/skills/data-catalogue/ontology/sources/*/ 2>/dev/null | wc -l | tr -d ' ') tables"
 echo "    Derivations: $(ls -d .claude/skills/data-catalogue/ontology/derivations/*/ 2>/dev/null | wc -l | tr -d ' ') categories"
 echo ""
 if [ -f ".claude/skills/data-catalogue/.sync-manifest.json" ]; then

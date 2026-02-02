@@ -77,9 +77,9 @@ git checkout -b "$BRANCH"
 log "Copying changes..."
 OLDPWD_SAVED="$OLDPWD"
 
-# Map local ontology/objects -> source models
-if [ -d "$OLDPWD_SAVED/.claude/skills/data-catalogue/ontology/objects" ]; then
-    cp -r "$OLDPWD_SAVED/.claude/skills/data-catalogue/ontology/objects/"* public/data-catalogue/models/ 2>/dev/null || true
+# Map local ontology/sources -> source models
+if [ -d "$OLDPWD_SAVED/.claude/skills/data-catalogue/ontology/sources" ]; then
+    cp -r "$OLDPWD_SAVED/.claude/skills/data-catalogue/ontology/sources/"* public/data-catalogue/models/ 2>/dev/null || true
 fi
 
 # Map local ontology/derivations -> source derivations

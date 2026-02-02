@@ -1,8 +1,8 @@
 # 002: Closed-Loop Data Catalogue Sync
 
 **Parent:** `001-orchestrator-system.md` (Phase 1 complete)
-**Status:** Implemented
-**Scope:** Phase 2A - Data catalogue sync infrastructure
+**Status:** Implemented (Phase 2A), Restructured
+**Scope:** Phase 2A-D - Data catalogue sync and enrichment infrastructure
 
 ---
 
@@ -10,32 +10,32 @@
 
 The orchestrator coordinates agents that maintain 50+ services. For agents to reason about data, they need:
 
-1. **Local ontology cache** — Models, derivations, relationships (synced)
-2. **Validation pipeline** — Deterministic checks before any change
-3. **Audit trail** — Every sync, every change, traceable to source
-4. **Closed loop** — Pull → Edit → Validate → Push → Pull
+1. **Local ontology cache** — Sources, derivations, relationships (synced)
+2. **Enriched entities** — Source + derivations merged into coherent business objects
+3. **Validation pipeline** — Deterministic checks before any change
+4. **Audit trail** — Every sync, every change, traceable to source
+5. **Closed loop** — Pull → Edit → Validate → Push → Pull
 
-**Deterministic scripts are the foundation. Agents orchestrate them.**
+**Deterministic scripts sync the raw layer. Agents maintain the enriched layer.**
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     ORCHESTRATOR VISION                         │
+│                     ONTOLOGY ARCHITECTURE                       │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│   AGENT LAYER (orchestrates)                                    │
-│   ├─ Reads local ontology cache for context                     │
-│   ├─ Decides what needs updating (semantic understanding)       │
-│   ├─ Calls deterministic scripts                                │
-│   └─ Commits with audit trail (WHY, not just WHAT)              │
+│   ENTITIES (enriched)          ← Agents interact here           │
+│   └─ member.json               ← Source + derivations combined  │
+│   └─ loan_application.json     ← Full semantic meaning          │
 │                                                                 │
-│   SCRIPT LAYER (deterministic)                                  │
-│   ├─ sync-data-catalogue.sh   → Pull from source                │
-│   ├─ check-drift.sh           → Detect divergence               │
-│   ├─ validate-local.sh        → Schema + API validation         │
-│   └─ push-changes.sh          → PR back to source               │
+│   ─────────────────────────────────────────────────────────     │
 │                                                                 │
-│   SOURCE LAYER (truth)                                          │
-│   └─ we-money/brightmatch-data-catalogue                        │
+│   SOURCES (raw)                ← Synced from data catalogue     │
+│   └─ member/_root.json         ← DB table schema                │
+│   └─ loan_application/_root.json                                │
+│                                                                 │
+│   DERIVATIONS (raw)            ← Synced from data catalogue     │
+│   └─ serviceability/           ← Computed transformations       │
+│   └─ extraction/               ← Field extractions              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
@@ -44,10 +44,15 @@ The orchestrator coordinates agents that maintain 50+ services. For agents to re
 
 ## Phases
 
-### Phase 2A: Sync Infrastructure (THIS PLAN) ✓
+### Phase 2A: Sync Infrastructure ✓
 - Deterministic scripts for pull/push
 - Manifest-based drift detection
 - Local ontology cache populated
+
+### Phase 2A.1: Directory Restructure ✓
+- Renamed `objects/` → `sources/` (clearer semantics)
+- Created `entities/` directory for enrichment layer
+- Updated scripts and documentation
 
 ### Phase 2B: Validation Pipeline (Future)
 - Schema extraction from TypeScript types
@@ -59,6 +64,11 @@ The orchestrator coordinates agents that maintain 50+ services. For agents to re
 - Semantic diff reporting (not just file diff)
 - Auto-enrichment of commit messages
 
+### Phase 2D: Entity Enrichment Layer (Future)
+- Merge sources + derivations into entity definitions
+- Agent-maintained with business understanding
+- Single coherent object for agent reasoning
+
 ---
 
 ## Implementation Summary
@@ -67,24 +77,92 @@ The orchestrator coordinates agents that maintain 50+ services. For agents to re
 
 | Script | Purpose | Permission |
 |--------|---------|------------|
-| `scripts/sync/sync-data-catalogue.sh` | Pull models + derivations | SAFE |
+| `scripts/sync/sync-data-catalogue.sh` | Pull sources + derivations | SAFE |
 | `scripts/sync/check-drift.sh` | Compare manifest vs remote | SAFE |
 | `scripts/sync/validate-local.sh` | JSON + API validation | SAFE |
 | `scripts/sync/push-changes.sh` | Create PR from local edits | BATCH_CONFIRM |
 
-### Files Created/Updated
+### Directory Structure
 
-| File | Status |
-|------|--------|
-| `scripts/sync/sync-data-catalogue.sh` | Created |
-| `scripts/sync/check-drift.sh` | Created |
-| `scripts/sync/validate-local.sh` | Created |
-| `scripts/sync/push-changes.sh` | Created |
-| `scripts/sync/sync-ontology.sh` | Updated (delegates to new script) |
-| `scripts/sync/sync-all.sh` | Updated (adds drift check) |
-| `.claude/skills/data-catalogue/ontology/README.md` | Updated (closed loop docs) |
-| `.claude/skills/data-catalogue/SKILL.md` | Updated (sync workflow) |
-| `docs/plans/002-data-catalogue-sync.md` | Created (this file) |
+```
+.claude/skills/data-catalogue/
+├── .sync-manifest.json              # Sync state
+├── SKILL.md                         # Skill documentation
+├── ontology/
+│   ├── README.md                    # Architecture documentation
+│   ├── sources/                     # Raw DB table schemas (synced)
+│   │   ├── member/_root.json
+│   │   ├── loan_application/_root.json
+│   │   └── ...
+│   ├── derivations/                 # Raw transformations (synced)
+│   │   ├── serviceability/
+│   │   ├── extraction/
+│   │   └── ...
+│   ├── entities/                    # Enriched objects (agent-maintained)
+│   │   └── (future: source + derivations merged)
+│   ├── links/                       # (future: relationships)
+│   └── actions/                     # (future: kinetic layer)
+└── docs/
+    ├── INDEX.md                     # Synced
+    └── CATALOGUE_CLAUDE.md          # Synced
+
+scripts/sync/
+├── sync-data-catalogue.sh           # Main sync script
+├── check-drift.sh                   # Drift detection
+├── validate-local.sh                # Local validation
+├── push-changes.sh                  # PR creation
+├── sync-ontology.sh                 # Wrapper (docs + data)
+├── sync-service.sh                  # (unchanged)
+└── sync-all.sh                      # Full orchestration sync
+```
+
+---
+
+## Two-Layer Architecture
+
+### Raw Layer (synced automatically)
+
+**Sources** (`ontology/sources/`):
+- DB table schemas from various services
+- Synced by `sync-data-catalogue.sh`
+- 21 tables across brightmatch, usermanager, categorizer, etc.
+
+**Derivations** (`ontology/derivations/`):
+- Computed transformations and field extractions
+- 7 categories: account, credit, extraction, lookup, profile, selection, serviceability
+- Define how raw fields become business values
+
+### Enriched Layer (agent-maintained)
+
+**Entities** (`ontology/entities/`):
+- Combine source schema + relevant derivations
+- Single coherent object with full semantic meaning
+- Agent can reason about "member" without tracing derivation chains
+
+Example entity structure:
+```json
+{
+  "name": "member",
+  "description": "A WeMoney member with all derived attributes",
+  "source": {
+    "table": "sources/member/_root.json",
+    "service": "usermanager"
+  },
+  "fields": {
+    "id": { "type": "uuid", "source": "raw" },
+    "primary_income": {
+      "type": "money",
+      "source": "derived",
+      "derivation": "extraction/detected_primary_income.json"
+    },
+    "net_capacity": {
+      "type": "money",
+      "source": "derived",
+      "derivation": "serviceability/net_capacity.json"
+    }
+  }
+}
+```
 
 ---
 
@@ -100,43 +178,9 @@ The orchestrator coordinates agents that maintain 50+ services. For agents to re
   "synced_by": "sync-data-catalogue.sh",
   "content": {
     "models": ["member", "loan_application", "credit_score", "..."],
-    "derivation_categories": ["serviceability", "filters", "lookups", "..."]
+    "derivation_categories": ["serviceability", "extraction", "..."]
   }
 }
-```
-
----
-
-## Directory Structure
-
-```
-.claude/skills/data-catalogue/
-├── .sync-manifest.json              # Sync state
-├── SKILL.md                         # Updated with sync workflow
-├── ontology/
-│   ├── README.md                    # Closed loop documentation
-│   ├── objects/                     # Synced models
-│   │   ├── member/_root.json
-│   │   ├── loan_application/_root.json
-│   │   └── ...
-│   ├── derivations/                 # Synced derivations
-│   │   ├── serviceability/
-│   │   ├── filters/
-│   │   └── ...
-│   ├── links/                       # (empty - future)
-│   └── actions/                     # (empty - future kinetic layer)
-└── docs/
-    ├── INDEX.md                     # Synced
-    └── CATALOGUE_CLAUDE.md          # Synced
-
-scripts/sync/
-├── sync-data-catalogue.sh           # Main sync script
-├── check-drift.sh                   # Drift detection
-├── validate-local.sh                # Local validation
-├── push-changes.sh                  # PR creation
-├── sync-ontology.sh                 # Updated wrapper
-├── sync-service.sh                  # (unchanged)
-└── sync-all.sh                      # Updated with drift check
 ```
 
 ---
@@ -145,7 +189,7 @@ scripts/sync/
 
 | Test | Command | Expected |
 |------|---------|----------|
-| Full sync | `./scripts/sync/sync-data-catalogue.sh --full` | Files in ontology/objects/ |
+| Full sync | `./scripts/sync/sync-data-catalogue.sh --full` | Files in ontology/sources/ |
 | Drift check (clean) | `./scripts/sync/check-drift.sh` | "IN_SYNC: {sha}" |
 | Idempotence | Run sync twice | No errors, same result |
 | Validation | `./scripts/sync/validate-local.sh` | Exit 0 |
@@ -153,14 +197,20 @@ scripts/sync/
 
 ---
 
-## Next Steps (Phase 2B/2C)
+## Next Steps
 
-After this phase:
+### Phase 2B: Validation Pipeline
+1. Extract TypeScript schemas for offline validation
+2. Pre-commit hooks for ontology changes
 
-1. **Extract TypeScript schemas** for offline validation
-2. **Add `/sync-catalogue` command** for agents
-3. **Semantic diff reporting** — agent explains WHAT changed, not just files
-4. **Pre-commit hooks** — validate before any ontology commit
+### Phase 2C: Agent Integration
+1. Add `/sync-catalogue` command
+2. Semantic diff reporting
+
+### Phase 2D: Entity Enrichment
+1. Define entity schema format
+2. Create initial entities (member, loan_application)
+3. Document derivation → entity mapping
 
 ---
 
