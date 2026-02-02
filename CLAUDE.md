@@ -1,99 +1,200 @@
 # WeMoney Agent Orchestration System
 
-## Project Purpose
+## Production Control Environment
 
-This repository is being transformed from a fork-terminal skill into an **agent orchestration operating system** for the WeMoney engineering organization.
+This repository is the **control plane** for the WeMoney engineering organization's codebase. It coordinates AI agents that maintain, monitor, and evolve 50+ services with mandatory human oversight.
+
+**Status:** `ORCHESTRATOR_STATUS=local` (not yet promoted to we-money org)
+
+---
+
+## Core Responsibilities
+
+### 1. Harness Layer
+Bridge between deployed code and observability:
+- Compare diffs against main branch
+- Respond to GitHub checks
+- Monitor deployment status
+- Trace code changes → observability signals
+
+### 2. Permission Enforcement
+All operations require appropriate oversight:
+```
+SAFE:           Read, search, test, document
+BATCH_CONFIRM:  Deploy staging, create PRs, sync
+CONFIRM_EACH:   Terraform, AWS, production, databases
+```
+
+### 3. Audit Trail
+Every significant action is committed with context:
+- WHY decisions were made
+- WHAT was changed
+- WHERE to trace source
+
+---
+
+## Service Inventory
+
+### Tier 1: Core Applications
+| Service | Repo | Language | Purpose |
+|---------|------|----------|---------|
+| brightmatch | we-money/brightmatch | Go | Loan matching, serviceability |
+| wemoney-backend | we-money/wemoney-backend | Go | API gateway |
+| brightmatch-data-catalogue | we-money/brightmatch-data-catalogue | TypeScript | Ontology source of truth |
+
+### Tier 2: Data & Intelligence
+| Service | Repo | Purpose |
+|---------|------|---------|
+| glean | we-money/glean | NL data querying |
+| categorizer | we-money/categorizer | Transaction categorization |
+| txformer | we-money/txformer | ML categorization |
+| data-platform | we-money/data-platform | Redshift IaC |
+
+### Tier 3: Supporting Services
+| Service | Purpose |
+|---------|---------|
+| open-banker | CDR/Open Banking |
+| creditor | Credit bureau integration |
+| usermanager | User management |
+| offerer | Offer generation |
+| notifier | Push/email notifications |
+
+### Tier 4: Infrastructure (DANGEROUS)
+| Service | Purpose | Risk |
+|---------|---------|------|
+| shared-infrastructure | Core AWS infra | CONFIRM_EACH |
+| aws-org | AWS Organization | CONFIRM_EACH |
+| automation-iam | IAM modules | CONFIRM_EACH |
+
+---
 
 ## Architecture: Model / Context / Tool / Prompt
 
 ### Model (Ontology)
-The ontology defines what exists in the WeMoney universe. NOT just schema documentation - business meaning.
+**Source of truth:** `we-money/brightmatch-data-catalogue`
 
-**Palantir-inspired layers:**
-- **Semantic** — Objects, Properties, Links (Member, FinancialProfile, Goal, Application, Lender, LenderCriteria)
-- **Kinetic** — Actions and Functions (generate_offer, send_nudge, request_testimonial)
-- **Dynamic** — Security, governance, evolution
+3-Tier structure:
+- **Models** = Source data (DB tables, APIs, events)
+- **Operations** = Primitives (filter, select, aggregate, min, max)
+- **Derivations** = Pipelines chaining operations
 
-**Key derived properties:**
-- Approval Probability = f(FinancialProfile, LenderCriteria)
-- Savings Potential = f(Current Debt, Available Offers)
-- Conversion Likelihood = f(Goal Alignment, Engagement Signals, Approval Probability)
+Key pattern: **Ralph Loop** (EXPLORE → UPDATE → VALIDATE)
 
 ### Context (Knowledge Base)
-- `DATA_CATALOG.md` — Schema for `wm_cleansed` in Redshift
-- Lender criteria rules
-- Slack tribal knowledge
-- Amplitude product behavior
+| Source | Location |
+|--------|----------|
+| Data models | `brightmatch-data-catalogue/public/data-catalogue/models/` |
+| Derivations | `brightmatch-data-catalogue/public/data-catalogue/derivations/` |
+| Documentation | `brightmatch-data-catalogue/docs/` |
+| Tribal knowledge | Slack history (to be mined) |
 
 ### Tool (Connectors)
-MCP servers for: Slack, ClickUp, Google Suite, AirTable, Splunk, Honeycomb, PagerDuty, Vercel, n8n
+**Implemented:**
+- GitHub (`gh` CLI)
 
-**DANGEROUS - Confirm each command:** AWS CLI, Terraform, Google Cloud
+**Planned:**
+- Slack, ClickUp, Redshift, Honeycomb, Splunk
 
 ### Prompt (Skills)
-Skills that orchestrate agent work threads.
+```
+.claude/skills/
+├── orchestrator/           # Central coordination, permissions
+├── data-catalogue/         # Ontology management
+├── services/
+│   └── brightmatch/        # Service-specific context
+└── fork-terminal/          # Agent spawning
+```
+
+---
 
 ## Key Business Concepts
 
-### WeMoney Vernacular
-- **FOBM** — Fully Onboarded Member (completed onboarding flow)
-- **BrightMatch** — Loan matching product (portal module)
-- **CAC** — Customer Acquisition Cost
-- **RPM** — Revenue Per Member
-- **CDR** — Consumer Data Right (Open Banking)
+### Vernacular
+| Term | Meaning |
+|------|---------|
+| FOBM | Fully Onboarded Member |
+| CAC | Customer Acquisition Cost |
+| RPM | Revenue Per Member |
+| CDR | Consumer Data Right (Open Banking) |
+| BrightMatch | Loan matching portal |
+| HEM | Household Expenditure Measure |
 
-### The "Mary Journey" (North Star)
-1. Mary downloads WeMoney after seeing ad
-2. Sets debt consolidation goal during onboarding
-3. CDR shows 82% credit utilization
-4. Agent identifies: high-intent, approvable, not converted
-5. Personalized push: "Mary, 3 lenders could save you $247/month"
-6. She applies, gets approved, leaves testimonial
-7. Testimonial feeds next ad cycle → flywheel
-
-### The Golden Question
+### The North Star
 > "Which members should get a consolidation offer today and what should it say?"
 
-This requires ontology + context + tools + prompts working together.
+This requires:
+- Ontology (Member → Goal → FinancialProfile → LenderCriteria → Offer)
+- Context (business rules, approval thresholds)
+- Tools (Redshift query, notification trigger)
+- Permission (human confirms before sending)
+
+---
 
 ## Repository Structure
 
 ```
-.claude/
-├── skills/
-│   ├── fork-terminal/          # Agent spawning (existing)
-│   ├── data-catalogue/         # Ontology management (Phase 1)
-│   └── orchestrator/           # Multi-agent coordination (Phase 3)
-├── mcp/                        # MCP server connectors (Phase 2)
-└── commands/
-    └── prime.md                # Bootstrap context
-
-loose_files/                    # Reference documents
-├── full_doc.md                 # Palantir ontology thinking
-├── glean_founder_thoughts.md   # NL query examples
-└── DATA_CATALOG.md             # wm_cleansed schema
+wemoney-orchestrator/
+├── CLAUDE.md                    # This file - orchestrator memory
+├── .claude/
+│   ├── skills/
+│   │   ├── orchestrator/        # Central coordination
+│   │   ├── data-catalogue/      # Ontology management
+│   │   └── services/            # Per-service contexts
+│   └── commands/
+│       └── prime.md             # Context bootstrap
+├── scripts/
+│   └── sync/                    # Deterministic sync scripts
+├── docs/
+│   └── plans/                   # Decision trail
+├── worktrees/                   # Cloned services (gitignored)
+└── loose_files/                 # Reference materials
 ```
 
-## Phase Plan
+---
 
-1. **Phase 1: Ontology Foundation** — Transform DATA_CATALOG into true ontology
-2. **Phase 2: Connector Framework** — MCP servers for tool integrations
-3. **Phase 3: Agent Orchestration** — Sub-agent spawning with skill inheritance
+## Workflow
 
-## Key References
+### Starting a Session
+1. Run `/prime` to load context
+2. Check `git status` and recent commits
+3. Review task list or plan
+4. Confirm permission level for planned work
 
+### During Work
+1. Commit at meaningful checkpoints
+2. Push regularly to preserve audit trail
+3. Document decisions in commit messages
+4. Respect permission boundaries
+
+### Completing Work
+1. Run relevant tests
+2. Create PR if changes ready for review
+3. Update task tracking
+4. Push final state
+
+---
+
+## External References
+
+### Internal Docs
+- `docs/plans/001-orchestrator-system.md` — Implementation plan
+- `loose_files/full_doc.md` — Palantir ontology thinking
+- `loose_files/glean_founder_thoughts.md` — NL query examples
+
+### External
 - Palantir Foundry Ontology documentation
-- Jessica Talisman, "Ontologies, Context Graphs, and Semantic Layers: What AI Actually Needs in 2026"
-- Uber QueryGPT, Airbnb Minerva, ThoughtSpot (see full_doc.md for links)
+- Jessica Talisman, "Ontologies, Context Graphs, and Semantic Layers"
 
-## External Integrations
+---
 
-### we-money/glean
-Starting point for data agent. Reference for ontology design.
+## Commit Convention
 
-### we-money/brightmatch → portal
-The module this ontology serves. Upstream sources flow through here.
+```
+<type>(<scope>): <description>
 
-## Commits
+Types: feat, fix, docs, refactor, test, sync
+Scopes: orchestrator, data-catalogue, brightmatch, phase1, etc.
 
-Commit regularly at checkpoints. Track lifecycle in ClickUp.
+Always include:
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
