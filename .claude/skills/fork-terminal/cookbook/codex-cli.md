@@ -14,4 +14,4 @@ FAST_MODEL: gpt-5.1-codex-mini
 - Before executing the command, run `codex --help` to understand the command and its options.
 - Always use interactive mode (so leave off -p and use positional prompt if needed)
 - For the -m (model) argument, use the DEFAULT_MODEL if not specified. If 'fast' is requested, use the FAST_MODEL. If 'heavy' is requested, use the HEAVY_MODEL.
-- Always run with `--dangerously-bypass-approvals-and-sandbox`
+- Never run with `--dangerously-bypass-approvals-and-sandbox` or similar permission bypass flags
