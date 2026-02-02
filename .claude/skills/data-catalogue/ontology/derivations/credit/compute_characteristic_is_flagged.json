@@ -1,0 +1,186 @@
+{
+  "id": "compute_characteristic_is_flagged",
+  "name": "Compute Characteristic Is Flagged",
+  "description": "Evaluate whether credit characteristics (CX/NX codes) indicate adverse credit history. Operates on characteristics from filter_user_credit_characteristics. Returns flagged characteristics based on code type and value thresholds.",
+  "steps": [
+    {
+      "id": "get_characteristics",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "select_latest_credit_characteristics"
+        }
+      ],
+      "description": "Get filtered credit characteristics for user"
+    },
+    {
+      "id": "evaluate_flags",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_characteristics"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "characteristics",
+              "type": "object",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Array of flagged characteristics with code, value, and flag reason"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "src",
+            "modules",
+            "portal",
+            "domain",
+            "queries",
+            "credit_flagging.go"
+          ],
+          "lines": [
+            45,
+            340
+          ],
+          "symbol": "shouldFlag"
+        },
+        "description": "Evaluate each CX/NX code and value against flagging rules. Returns flagged characteristics indicating hardship, defaults, arrears, insolvency, judgements, high enquiries, recent issues, or adverse flags."
+      },
+      "description": "Evaluate characteristic codes and values against flagging rules"
+    }
+  ],
+  "output": {
+    "step": "evaluate_flags",
+    "description": "Flagged characteristics indicating adverse credit history"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_credit_characteristics"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "modules",
+      "portal",
+      "domain",
+      "queries",
+      "credit_flagging.go"
+    ],
+    "lines": [
+      45,
+      340
+    ],
+    "symbol": "shouldFlag"
+  },
+  "notes": {
+    "flagged_code_categories": {
+      "hardship": {
+        "codes": [
+          "CX5010",
+          "CX5000",
+          "CX50xx"
+        ],
+        "condition": "Value = 'Y' or > 0"
+      },
+      "defaults": {
+        "codes": [
+          "NX7513",
+          "NX7514",
+          "NX7515",
+          "NX7516",
+          "NX7568",
+          "NX4000"
+        ],
+        "condition": "Value > 0"
+      },
+      "arrears": {
+        "codes": [
+          "CX0231-0239",
+          "CX0095-0103"
+        ],
+        "condition": "Value > 0"
+      },
+      "insolvency": {
+        "codes": [
+          "NP7500",
+          "NP7501",
+          "NP7502",
+          "NP8510",
+          "NP8511",
+          "NP8512"
+        ],
+        "condition": "Value > 0"
+      },
+      "judgements": {
+        "codes": [
+          "NP7504",
+          "NP7508-7512"
+        ],
+        "condition": "Value > 0"
+      },
+      "director_issues": {
+        "codes": [
+          "NP8503",
+          "NP8505",
+          "NP8506"
+        ],
+        "condition": "Value > 0"
+      },
+      "high_enquiries": {
+        "codes": [
+          "NX7999",
+          "NX8000",
+          "NX8001"
+        ],
+        "condition": "Value > threshold (varies by code)"
+      },
+      "recent_issues": {
+        "codes": [
+          "CX0339-0344",
+          "CX0349"
+        ],
+        "condition": "Months < 6 or 12 depending on severity"
+      },
+      "new_accounts": {
+        "codes": [
+          "CX0023",
+          "CX7385"
+        ],
+        "condition": "Value > 2"
+      },
+      "worst_status": {
+        "codes": [
+          "Any code containing 'Wrs'"
+        ],
+        "condition": "Status not in [0, -991, -993]"
+      },
+      "adverse_flag": {
+        "codes": [
+          "NX7601"
+        ],
+        "condition": "Value = 'Y'"
+      }
+    },
+    "clean_values": {
+      "not_flagged": [
+        "0",
+        "-991",
+        "-993",
+        "N",
+        "No",
+        ""
+      ]
+    },
+    "usage": "Used in RiskFlagsBar to highlight adverse credit characteristics for manual review"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "total_expenses",
+  "name": "Total Expenses",
+  "description": "Sum of adjusted living expenses, housing, and loan repayments",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "sum",
+      "inputs": [
+        {
+          "derivation": "adjusted_living_expenses"
+        },
+        {
+          "derivation": "adjusted_housing"
+        },
+        {
+          "derivation": "adjusted_loans"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "adjusted_living_expenses",
+      "adjusted_housing",
+      "adjusted_loans"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - total expenses"
+  }
+}

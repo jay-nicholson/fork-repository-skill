@@ -1,0 +1,76 @@
+{
+  "id": "filter_user_credit_scores",
+  "name": "Filter User Credit Scores",
+  "description": "Filter credit_scores by uid and bureau. Query: SELECT ... FROM credit_scores WHERE uid = $1 AND bureau = $2",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists via filter_user_member"
+    },
+    {
+      "id": "filter_by_uid",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "credit_score"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "WHERE uid = :user_id"
+    },
+    {
+      "id": "filter_by_bureau",
+      "operation": "filter",
+      "inputs": [
+        {
+          "step": "filter_by_uid"
+        }
+      ],
+      "predicate": {
+        "field": "bureau",
+        "operator": "eq",
+        "value": "equifax"
+      },
+      "description": "AND bureau = 'equifax'"
+    }
+  ],
+  "output": {
+    "step": "filter_by_bureau",
+    "description": "All credit_score records for user and bureau"
+  },
+  "depends_on": {
+    "models": [
+      "credit_score"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "credit_score.uid",
+      "credit_score.bureau"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "score.go"
+    ],
+    "lines": [
+      52,
+      55
+    ],
+    "symbol": "GetLatest"
+  }
+}

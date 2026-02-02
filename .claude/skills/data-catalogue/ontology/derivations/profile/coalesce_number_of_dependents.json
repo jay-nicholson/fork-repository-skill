@@ -1,0 +1,103 @@
+{
+  "id": "coalesce_number_of_dependents",
+  "name": "Coalesce Number of Dependents",
+  "description": "Get number of dependents from loan_application.applicant, falling back to member if not available. Used in Header component.",
+  "steps": [
+    {
+      "id": "get_loan_app",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        }
+      ],
+      "description": "Get latest loan application for user"
+    },
+    {
+      "id": "get_member",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Get member for user"
+    },
+    {
+      "id": "extract_from_loan_app",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_loan_app"
+        },
+        {
+          "literal": "applicant.number_of_dependents"
+        }
+      ],
+      "description": "Extract number_of_dependents from loan_application.applicant"
+    },
+    {
+      "id": "extract_from_member",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_member"
+        },
+        {
+          "literal": "number_of_dependants"
+        }
+      ],
+      "description": "Extract number_of_dependants from member"
+    },
+    {
+      "id": "coalesce_dependents",
+      "operation": "coalesce",
+      "inputs": [
+        {
+          "step": "extract_from_loan_app"
+        },
+        {
+          "step": "extract_from_member"
+        }
+      ],
+      "description": "Use loan_application.applicant.number_of_dependents if available, otherwise member.number_of_dependants"
+    }
+  ],
+  "output": {
+    "step": "coalesce_dependents",
+    "description": "Number of dependents (loan_application ?? member)",
+    "type": "number"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application",
+      "filter_user_member"
+    ],
+    "fields": [
+      "loan_application.applicant.number_of_dependents",
+      "member.number_of_dependants"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_profile.go"
+    ],
+    "lines": [
+      83,
+      87
+    ],
+    "symbol": "MapUserProfile"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header",
+      "label": "Dependents",
+      "format": "count"
+    }
+  ]
+}

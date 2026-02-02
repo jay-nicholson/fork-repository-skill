@@ -1,0 +1,52 @@
+{
+  "id": "portal_account.historical_balance",
+  "name": "Historical Balance",
+  "description": "Historical balance snapshot for an account. Contains daily balance records used to calculate balance metrics like days_negative_90d and lowest_balance_90d.",
+  "source": {
+    "type": "derived",
+    "derived_from": {
+      "derivation": "filter_user_account_balances",
+      "transform": "map_historical_balances"
+    }
+  },
+  "depends_on": {
+    "models": ["account_historical_balance"],
+    "derivations": ["filter_user_account_balances"]
+  },
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_historical_balances.go"],
+    "lines": [8, 11],
+    "symbol": "HistoricalBalance"
+  },
+  "fields": [
+    {
+      "name": "date",
+      "json_tag": "date",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Balance date formatted as YYYY-MM-DD",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_historical_balances.go"],
+        "lines": [9, 9],
+        "field_name": "Date"
+      }
+    },
+    {
+      "name": "balance",
+      "json_tag": "balance",
+      "go_type": "float64",
+      "data_type": "number",
+      "required": true,
+      "description": "Account balance on this date, converted from decimal to float64",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_historical_balances.go"],
+        "lines": [10, 10],
+        "field_name": "Balance"
+      }
+    }
+  ]
+}

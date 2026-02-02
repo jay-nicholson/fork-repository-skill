@@ -1,0 +1,22 @@
+{
+  "id": "user_transaction_analysis.category_monthly_map",
+  "name": "Category Monthly Map",
+  "description": "Map of L3 category codes to monthly amount values. Used for expense/income/transfer breakdowns by category.",
+  "type": "map",
+  "data_type": "object",
+  "key_type": "text",
+  "key_description": "L3 category code (e.g., 'expense.housing.rent', 'income.employment.salary_wages')",
+  "value_type": "number",
+  "value_description": "Total amount for this category",
+  "backend_ref": {
+    "repo": "categorizer",
+    "path": ["model", "user_transaction_analysis.go"],
+    "lines": [34, 39],
+    "symbol": "UserTransactionAnalysis"
+  },
+  "notes": {
+    "go_type": "map[string]float64",
+    "usage": "Fields like L3ExpenseMonthlySums, L3IncomeMonthlyProjections use this structure"
+  },
+  "fields": []
+}

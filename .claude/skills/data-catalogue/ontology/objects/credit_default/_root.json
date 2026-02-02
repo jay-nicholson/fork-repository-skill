@@ -1,0 +1,129 @@
+{
+  "id": "credit_default",
+  "name": "Credit Default",
+  "description": "Credit account default records from credit bureau stored in Creditor database.",
+  "source": {
+    "type": "database",
+    "database": "creditor",
+    "table": "credit_defaults"
+  },
+  "backend_ref": {
+    "repo": "creditor",
+    "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+    "lines": [3, 14]
+  },
+  "fields": [
+    {
+      "name": "uid",
+      "json_tag": "uid",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier - part of composite PK",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [4, 4],
+        "field_name": "uid"
+      }
+    },
+    {
+      "name": "account_id",
+      "json_tag": "accountId",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Credit account identifier - part of composite PK",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [5, 5],
+        "field_name": "account_id"
+      }
+    },
+    {
+      "name": "bureau",
+      "json_tag": "bureau",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Credit bureau - part of composite PK",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [6, 6],
+        "field_name": "bureau"
+      }
+    },
+    {
+      "name": "date",
+      "json_tag": "date",
+      "sql_type": "DATE",
+      "data_type": "date",
+      "required": true,
+      "description": "Date of default - part of composite PK",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [7, 7],
+        "field_name": "date"
+      }
+    },
+    {
+      "name": "amount",
+      "json_tag": "amount",
+      "sql_type": "DECIMAL",
+      "data_type": "number",
+      "required": false,
+      "description": "Default amount",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [8, 8],
+        "field_name": "amount"
+      }
+    },
+    {
+      "name": "currency",
+      "json_tag": "currency",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Currency of default amount",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [9, 9],
+        "field_name": "currency"
+      }
+    },
+    {
+      "name": "created_at",
+      "json_tag": "createdAt",
+      "sql_type": "TIMESTAMPTZ",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record creation timestamp",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [10, 10],
+        "field_name": "created_at"
+      }
+    },
+    {
+      "name": "updated_at",
+      "json_tag": "updatedAt",
+      "sql_type": "TIMESTAMPTZ",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record last updated timestamp",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000013_credit_defaults.up.sql"],
+        "lines": [11, 11],
+        "field_name": "updated_at"
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "id": "select_latest_credit_score",
+  "name": "Select Latest Credit Score",
+  "description": "From filtered credit scores, get the most recent by month. Query: ... ORDER BY month DESC LIMIT 1",
+  "steps": [
+    {
+      "id": "get_user_scores",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_credit_scores"
+        }
+      ],
+      "description": "Get filtered credit scores for user"
+    },
+    {
+      "id": "sort_by_month_desc",
+      "operation": "sort",
+      "inputs": [
+        {
+          "step": "get_user_scores"
+        }
+      ],
+      "by": "month",
+      "order": "desc",
+      "description": "ORDER BY month DESC"
+    },
+    {
+      "id": "take_first",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "sort_by_month_desc"
+        }
+      ],
+      "description": "LIMIT 1"
+    }
+  ],
+  "output": {
+    "step": "take_first"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_credit_scores"
+    ],
+    "fields": [
+      "credit_score.month"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "score.go"
+    ],
+    "symbol": "latestOneScore"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header Bar",
+      "field": "score",
+      "label": "OneScore",
+      "format": "number"
+    }
+  ]
+}

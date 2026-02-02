@@ -1,0 +1,43 @@
+{
+  "id": "extract_credit_account_provider",
+  "name": "Extract Credit Account Provider",
+  "description": "Extract provider/institution from CCR credit account for display",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_credit_accounts" }],
+      "description": "Get user's CCR credit accounts"
+    },
+    {
+      "id": "extract_field",
+      "operation": "select",
+      "inputs": [
+        { "step": "get_accounts" },
+        { "literal": "provider" }
+      ],
+      "description": "Extract provider field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Credit provider/institution"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_credit_accounts"],
+    "fields": ["credit_account.provider"]
+  },
+  "ui_outputs": [
+    {
+      "component": "AccountInfo",
+      "label": "Institution",
+      "format": "text"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": ["src", "views", "summary-v2", "components", "credit-accounts", "CreditAccountCard.tsx"],
+    "lines": [37, 37],
+    "symbol": "provider"
+  }
+}

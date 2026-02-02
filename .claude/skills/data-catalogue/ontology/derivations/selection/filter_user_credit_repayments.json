@@ -1,0 +1,55 @@
+{
+  "id": "filter_user_credit_repayments",
+  "name": "Filter User Credit Repayments",
+  "description": "Filter credit_repayments by user uid. Returns all repayment records for the user across all accounts and bureaus. Depends on filter_user_member to ensure user exists.",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ]
+    },
+    {
+      "id": "filter_by_user",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "credit_repayment"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      }
+    }
+  ],
+  "output": {
+    "step": "filter_by_user",
+    "description": "All credit repayment records for this user"
+  },
+  "depends_on": {
+    "models": [
+      "credit_repayment"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "repayments.go"
+    ],
+    "lines": [
+      32,
+      33
+    ],
+    "symbol": "DELETE FROM credit_repayments WHERE uid = $1"
+  }
+}

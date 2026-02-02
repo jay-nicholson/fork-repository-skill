@@ -1,0 +1,156 @@
+{
+  "id": "categorize_streams",
+  "name": "Categorize Transaction Streams",
+  "description": "Write-time categorization of streams from compute_transaction_streams. Applies rules-based matching first (CategorizeStreams), then ML model (txformer) for uncategorized streams, then persists categorized streams to user_transaction_analysis.",
+  "steps": [
+    {
+      "id": "apply_rules",
+      "operation": "custom",
+      "inputs": [
+        {
+          "derivation": "compute_transaction_streams"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "streams",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "stream"
+        },
+        "source": {
+          "repo": "categorizer",
+          "path": [
+            "categorizer",
+            "analysis",
+            "analysis.go"
+          ],
+          "lines": [
+            629,
+            667
+          ],
+          "symbol": "CategorizeStreams"
+        },
+        "description": "Assigns category taxonomy to each stream via: (1) rules-based matching using allRulesArena.CategorizeStreams(), (2) ML model (txformer) for uncategorized, (3) heuristics promoting large transfers_in to income if no income streams exist"
+      }
+    },
+    {
+      "id": "persist_to_uta",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "apply_rules"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "streams",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "model_ref": "user_transaction_analysis.stream",
+          "description": "Categorized streams array"
+        },
+        "source": {
+          "repo": "categorizer",
+          "path": [
+            "db",
+            "postgres",
+            "user_transaction_analysis.go"
+          ],
+          "lines": [
+            237,
+            343
+          ],
+          "symbol": "UpsertUserTransactionAnalysis"
+        },
+        "description": "Persists categorized streams and monthly aggregations to user_transaction_analysis table as JSONB"
+      }
+    }
+  ],
+  "output": {
+    "step": "persist_to_uta",
+    "description": "user_transaction_analysis record with categorized streams persisted"
+  },
+  "depends_on": {
+    "derivations": [
+      "compute_transaction_streams"
+    ]
+  },
+  "outputs_to": {
+    "models": [
+      "user_transaction_analysis"
+    ]
+  },
+  "source": {
+    "repo": "categorizer",
+    "path": [
+      "categorizer",
+      "analysis",
+      "analysis.go"
+    ],
+    "lines": [
+      629,
+      667
+    ],
+    "symbol": "CategorizeStreams + ML fallback"
+  },
+  "notes": {
+    "categorization_flow": [
+      "1. Rules-based categorization via allRulesArena.CategorizeStreams()",
+      "2. ML model (txformer) for remaining uncategorized streams",
+      "3. Heuristics for transfer-to-income promotion if no income streams found"
+    ],
+    "category_taxonomy": {
+      "income": {
+        "employment": [
+          "salary_wages",
+          "bonus",
+          "commission"
+        ],
+        "other": [
+          "dividends",
+          "rental",
+          "government_benefits",
+          "transfers_and_reimbursements"
+        ]
+      },
+      "expense": {
+        "housing": [
+          "rent",
+          "mortgage",
+          "utilities"
+        ],
+        "living": [
+          "groceries",
+          "transport",
+          "entertainment"
+        ],
+        "financial": [
+          "loan_repayment",
+          "credit_card",
+          "insurance"
+        ]
+      },
+      "transfers": {
+        "transfers_in": [],
+        "transfers_out": []
+      }
+    },
+    "income_promotion_threshold": 1600,
+    "income_promotion_rule": "If no income streams exist, transfers_in with mean monthly ≥$1600 and non-irregular cadence are promoted to income.employment.salary_wages"
+  }
+}

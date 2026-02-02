@@ -1,0 +1,204 @@
+{
+  "id": "account",
+  "name": "Bank Account",
+  "description": "Connected bank account from OpenBanking/Yodlee data aggregators. Accounts are fetched from banking APIs and stored in categorizer DB. Used as input for stream aggregation in CalculateUserTransactionAnalysis.",
+  "source": {
+    "type": "db:categorizer",
+    "database": "categorizer",
+    "table": "accounts"
+  },
+  "backend_ref": {
+    "repo": "categorizer",
+    "path": ["db", "postgres", "model", "accounts.go"],
+    "lines": [150, 214],
+    "symbol": "Account"
+  },
+  "notes": {
+    "data_source": "OpenBanking CDR or Yodlee data aggregator",
+    "used_in_stream_aggregation": "categorizer/categorizer/analysis/analysis.go:buildStreams - accounts used to join with transactions"
+  },
+  "fields": [
+    {
+      "name": "user_id",
+      "json_tag": "user_id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier - foreign key to users table",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [151, 151],
+        "field_name": "UserId"
+      }
+    },
+    {
+      "name": "id",
+      "json_tag": "id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Account identifier from aggregator",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [152, 152],
+        "field_name": "Id"
+      }
+    },
+    {
+      "name": "name",
+      "json_tag": "name",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Account name from bank",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [153, 153],
+        "field_name": "Name"
+      }
+    },
+    {
+      "name": "aggregator",
+      "json_tag": "aggregator",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Data aggregator source (e.g., 'yodlee', 'basiq', 'openbanking')",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [156, 156],
+        "field_name": "Aggregator"
+      }
+    },
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Account type (e.g., 'SAVINGS', 'CHECKING', 'CREDIT_CARD', 'LOAN')",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [158, 158],
+        "field_name": "Type"
+      }
+    },
+    {
+      "name": "balance",
+      "json_tag": "balance",
+      "go_type": "*decimal.Decimal",
+      "data_type": "number",
+      "required": false,
+      "description": "Current account balance",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [159, 159],
+        "field_name": "Balance"
+      }
+    },
+    {
+      "name": "status",
+      "json_tag": "status",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Account status (e.g., 'ACTIVE', 'INACTIVE', 'CLOSED')",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [166, 166],
+        "field_name": "Status"
+      }
+    },
+    {
+      "name": "wemoney_type_1",
+      "json_tag": "wemoney_type_1",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "WeMoney internal account classification level 1",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [168, 168],
+        "field_name": "WemoneyType1"
+      }
+    },
+    {
+      "name": "wemoney_type_2",
+      "json_tag": "wemoney_type_2",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "WeMoney internal account classification level 2",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [169, 169],
+        "field_name": "WemoneyType2"
+      }
+    },
+    {
+      "name": "is_ob",
+      "json_tag": "is_ob",
+      "go_type": "bool",
+      "data_type": "boolean",
+      "required": true,
+      "description": "Whether account is from OpenBanking CDR",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [191, 191],
+        "field_name": "IsOb"
+      }
+    },
+    {
+      "name": "created_at",
+      "json_tag": "created_at",
+      "go_type": "time.Time",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record creation timestamp",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [209, 209],
+        "field_name": "CreatedAt"
+      }
+    },
+    {
+      "name": "updated_at",
+      "json_tag": "updated_at",
+      "go_type": "time.Time",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record last update timestamp",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [210, 210],
+        "field_name": "UpdatedAt"
+      }
+    },
+    {
+      "name": "interest_rate",
+      "json_tag": "interest_rate",
+      "go_type": "*decimal.Decimal",
+      "data_type": "number",
+      "required": false,
+      "description": "Interest rate for the account (percentage)",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "accounts.go"],
+        "lines": [171, 171],
+        "field_name": "InterestRate"
+      }
+    }
+  ]
+}

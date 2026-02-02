@@ -1,0 +1,155 @@
+{
+  "id": "loan_application.quote",
+  "name": "Loan Application Quote",
+  "description": "Quote result from a lender",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [71, 83]
+  },
+  "fields": [
+    {
+      "name": "lender",
+      "json_tag": "lender",
+      "go_type": "lender.Lender",
+      "data_type": "text",
+      "required": false,
+      "description": "Lender identifier",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [72, 72]
+      }
+    },
+    {
+      "name": "reference_id",
+      "json_tag": "referenceId",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Lender's reference ID for this quote",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [73, 73]
+      }
+    },
+    {
+      "name": "link",
+      "json_tag": "link",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "URL link to the quote on lender's website",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [74, 74]
+      }
+    },
+    {
+      "name": "quoted_interest_rate",
+      "json_tag": "quotedInterestRate",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Quoted interest rate (percentage)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [75, 75]
+      }
+    },
+    {
+      "name": "quoted_interest_total",
+      "json_tag": "quotedInterestTotal",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Total interest amount over loan term",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [76, 76]
+      }
+    },
+    {
+      "name": "quoted_total_amount",
+      "json_tag": "quotedTotalAmount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Total amount to be repaid (principal + interest + fees)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [77, 77]
+      }
+    },
+    {
+      "name": "quoted_comparison_rate",
+      "json_tag": "quotedComparisonRate",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Comparison rate (includes fees, percentage)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [78, 78]
+      }
+    },
+    {
+      "name": "quoted_repayment_amount",
+      "json_tag": "quotedRepaymentAmount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Regular repayment amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [79, 79]
+      }
+    },
+    {
+      "name": "establishment_fee",
+      "json_tag": "establishmentFee",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "One-time establishment/application fee",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [80, 80]
+      }
+    },
+    {
+      "name": "early_exit_fee",
+      "json_tag": "earlyExitFee",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Fee for early loan repayment",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [81, 81]
+      }
+    },
+    {
+      "name": "monthly_fee",
+      "json_tag": "monthlyFee",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Recurring monthly account/service fee",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [82, 82]
+      }
+    }
+  ]
+}

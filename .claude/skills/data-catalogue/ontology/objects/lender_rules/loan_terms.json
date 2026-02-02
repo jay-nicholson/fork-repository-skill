@@ -1,0 +1,23 @@
+{
+  "id": "lender_rules.loan_terms",
+  "name": "Loan Terms Rules",
+  "description": "Loan amount and purpose eligibility checks",
+  "phase": "declared",
+  "deterministic": true,
+  "derivation_ref": "evaluate_loan_terms_rules",
+  "lenders_with_rules": ["latitude", "nowfinance", "ourmoneymarket", "plenti", "wisr"],
+  "fields": [
+    {
+      "name": "loan_amount",
+      "data_type": "number",
+      "required": true,
+      "description": "Requested loan amount"
+    },
+    {
+      "name": "loan_purpose",
+      "data_type": "text",
+      "required": false,
+      "description": "Purpose of the loan"
+    }
+  ]
+}

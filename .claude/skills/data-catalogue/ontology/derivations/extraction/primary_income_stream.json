@@ -1,0 +1,98 @@
+{
+  "id": "primary_income_stream",
+  "name": "Primary Income Stream",
+  "description": "Identify the primary income stream: the single highest monthly amount credit stream that qualifies as income (via isCalculationComponentIncome check).",
+  "steps": [
+    {
+      "id": "filter_income_streams",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "credit"
+          },
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active"
+          },
+          {
+            "field": "cadence_category",
+            "operator": "neq",
+            "value": "Irregular"
+          },
+          {
+            "field": "category.code",
+            "operator": "starts_with",
+            "value": "income."
+          },
+          {
+            "field": "category.code",
+            "operator": "not_in",
+            "value": [
+              "income.other.health_rebates",
+              "income.other.capital_proceeds",
+              "income.other.cash_deposit",
+              "income.other.insurance_refund",
+              "income.other.purchase_refund",
+              "income.other.transfers_and_reimbursements"
+            ]
+          }
+        ]
+      },
+      "description": "Filter to credit streams that qualify as income per isCalculationComponentIncome: active, regular cadence, income category, excluding one-off/refund types"
+    },
+    {
+      "id": "sorted_by_amount",
+      "operation": "sort",
+      "inputs": [
+        {
+          "step": "filter_income_streams"
+        }
+      ],
+      "by": "amount.mean",
+      "order": "desc",
+      "description": "Sort by average amount descending (proxy for monthly amount since all are regular cadence)"
+    },
+    {
+      "id": "primary_stream",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "sorted_by_amount"
+        }
+      ],
+      "description": "Take the highest amount stream as primary"
+    }
+  ],
+  "output": {
+    "step": "primary_stream",
+    "description": "The primary income stream object, or null if no qualifying stream found"
+  },
+  "depends_on": {
+    "derivations": [
+      "aggregate_streams"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      48,
+      89
+    ],
+    "symbol": "MapDetected - primaryStream selection"
+  }
+}

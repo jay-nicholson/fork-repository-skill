@@ -1,0 +1,57 @@
+{
+  "id": "filter_user_xy_pf_scores",
+  "name": "Filter User XYPF Scores",
+  "description": "Filter xy_pf_scores by uid. Query: SELECT ... FROM xy_pf_scores WHERE uid = $1",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists via filter_user_member"
+    },
+    {
+      "id": "filter_by_uid",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "xy_pf_score"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "WHERE uid = :user_id"
+    }
+  ],
+  "output": {
+    "step": "filter_by_uid",
+    "description": "All xy_pf_score records for user"
+  },
+  "depends_on": {
+    "models": [
+      "xy_pf_score"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "xy_pf_score.uid"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "xy_pf_score.go"
+    ],
+    "symbol": "GetLatest"
+  },
+  "category": "selection"
+}

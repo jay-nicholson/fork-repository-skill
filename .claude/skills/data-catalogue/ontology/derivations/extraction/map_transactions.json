@@ -1,0 +1,111 @@
+{
+  "id": "map_transactions",
+  "name": "Map Transactions",
+  "description": "Transforms raw connected account transactions into enriched Transaction objects. Joins with account info (name, type, subType) and stream categories (BrightMatch category, HEM category). Sorted by date descending.",
+  "steps": [
+    {
+      "id": "get_raw_transactions",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_transactions" }],
+      "description": "Get raw transactions from categorizer analysis"
+    },
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_accounts" }],
+      "description": "Get connected accounts for enrichment"
+    },
+    {
+      "id": "get_analysis",
+      "operation": "identity",
+      "inputs": [{ "derivation": "aggregate_streams" }],
+      "description": "Get full analysis object (analysis.Streams used for category lookup)"
+    },
+    {
+      "id": "enrich_and_map",
+      "operation": "custom",
+      "inputs": [
+        { "step": "get_raw_transactions" },
+        { "step": "get_accounts" },
+        { "step": "get_analysis" }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "transactions", "type": "array", "required": true, "description": "ports.ConnectedAccountTransactions" },
+            { "name": "accounts", "type": "array", "required": true, "description": "ports.ConnectedAccounts" },
+            { "name": "analysis", "type": "object", "required": true, "description": "ports.ConnectedAccountAnalysis (contains .Streams for category lookup)" }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Enriched transactions with account info and categories"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": ["src", "shared", "queries", "member", "map_transactions.go"],
+          "lines": [29, 101],
+          "symbol": "MapTransactions"
+        },
+        "description": "For each transaction: (1) join account name/type/subType by accountId via mapAccountInfo(), (2) build category lookup from analysis.Streams via mapTransactionCategories() at lines 145-157, (3) lookup BrightMatch category and hemCategory by transactionID, (4) sort by date DESC via orderByDateDesc()"
+      },
+      "description": "Enrich transactions with account info and stream categories"
+    }
+  ],
+  "output": {
+    "step": "enrich_and_map",
+    "description": "Enriched transactions sorted by date descending"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_transactions", "filter_user_accounts", "aggregate_streams"],
+    "fields": [
+      "transaction.id",
+      "transaction.date",
+      "transaction.description",
+      "transaction.amount",
+      "transaction.direction",
+      "transaction.account_id",
+      "account.name",
+      "account.type",
+      "account.sub_type",
+      "stream.transaction_ids",
+      "stream.category.name",
+      "stream.category.code",
+      "stream.category.hem_expense_type"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_transactions.go"],
+    "lines": [29, 101],
+    "symbol": "MapTransactions"
+  },
+  "ui_outputs": [
+    {
+      "component": "TransactionList",
+      "label": "Transaction List",
+      "format": "text",
+      "description": "Scrollable list of transactions in Summary V2 center column"
+    }
+  ],
+  "notes": {
+    "field_mapping": {
+      "id": "id",
+      "transactedAt": "date",
+      "description": "description",
+      "amount": "amount (truncated to 2 decimals)",
+      "direction": "direction",
+      "accountId": "accountId",
+      "account.name": "accountName (joined)",
+      "account.type": "accountType (joined)",
+      "account.subType": "accountSubType (joined)",
+      "type": "type",
+      "category.final": "category",
+      "stream.category.name": "brightMatchCategory (from stream)",
+      "stream.category.code": "brightMatchCategoryCode (from stream)",
+      "stream.category.hemExpenseType": "hemCategory (from stream)"
+    },
+    "sort_order": "date DESC (most recent first)"
+  }
+}

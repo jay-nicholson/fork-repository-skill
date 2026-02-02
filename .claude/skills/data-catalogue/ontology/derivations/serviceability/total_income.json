@@ -1,0 +1,44 @@
+{
+  "id": "total_income",
+  "name": "Total Income",
+  "description": "Sum of adjusted primary and other income",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "sum",
+      "inputs": [
+        {
+          "derivation": "adjusted_primary_income"
+        },
+        {
+          "derivation": "adjusted_other_income"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "adjusted_primary_income",
+      "adjusted_other_income"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - total income"
+  }
+}

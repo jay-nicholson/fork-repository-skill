@@ -1,0 +1,111 @@
+{
+  "id": "count_recent_enquiries",
+  "name": "Count Recent Credit Enquiries",
+  "description": "Count credit enquiries from the last 6 months. Used in RiskFlagsBar to show recent enquiry activity.",
+  "steps": [
+    {
+      "id": "get_user_enquiries",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_credit_enquiries"
+        }
+      ],
+      "description": "Get all credit enquiries for user"
+    },
+    {
+      "id": "filter_recent",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_user_enquiries"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "enquiries",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Enquiries where enquiry_date >= 6 months ago"
+        },
+        "source": {
+          "repo": "brightmatch-admin-portal",
+          "path": [
+            "src",
+            "components",
+            "risk-flags-bar",
+            "RiskFlagsBar.tsx"
+          ],
+          "lines": [
+            117,
+            125
+          ],
+          "symbol": "recentEnquiries"
+        },
+        "description": "Filter enquiries where enquiry_date >= (now - 6 months)"
+      },
+      "description": "Filter by date >= 6 months ago"
+    },
+    {
+      "id": "count_recent",
+      "operation": "aggregate",
+      "inputs": [
+        {
+          "step": "filter_recent"
+        }
+      ],
+      "aggregator": {
+        "type": "count"
+      },
+      "description": "COUNT(*)"
+    }
+  ],
+  "output": {
+    "step": "count_recent",
+    "type": "number",
+    "description": "Number of credit enquiries in last 6 months"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_credit_enquiries"
+    ],
+    "fields": [
+      "credit_enquiry.enquiry_date"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": [
+      "src",
+      "components",
+      "risk-flags-bar",
+      "RiskFlagsBar.tsx"
+    ],
+    "lines": [
+      117,
+      135
+    ],
+    "symbol": "recentEnquiries filter"
+  },
+  "ui_outputs": [
+    {
+      "component": "RiskFlagsBar",
+      "label": "Enquiries/6mo",
+      "format": "count"
+    }
+  ],
+  "notes": {
+    "frontend_logic": "const monthsAgo = new Date(); monthsAgo.setMonth(monthsAgo.getMonth() - 6); enquiries.filter(e => new Date(e.date) >= monthsAgo).length",
+    "severity": "Always critical if count > 0",
+    "time_window": "6 months (ENQUIRY_MONTHS_RANGE constant in RiskFlagsBar.tsx:23)"
+  },
+  "category": "credit"
+}

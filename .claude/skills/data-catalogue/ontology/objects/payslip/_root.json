@@ -1,0 +1,105 @@
+{
+  "id": "payslip",
+  "name": "Payslip",
+  "description": "Uploaded payslip records with detected and monthly net pay",
+  "source": {
+    "type": "database",
+    "database": "brightmatch",
+    "table": "payslips"
+  },
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+    "lines": [3, 13]
+  },
+  "fields": [
+    {
+      "name": "user_id",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [4, 4]
+      }
+    },
+    {
+      "name": "application_id",
+      "data_type": "text",
+      "required": true,
+      "description": "Loan application identifier",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [5, 5]
+      }
+    },
+    {
+      "name": "net_pay_detected",
+      "data_type": "number",
+      "required": true,
+      "description": "Net pay amount detected from payslip (raw detection)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [6, 6]
+      }
+    },
+    {
+      "name": "net_pay_monthly",
+      "data_type": "number",
+      "required": true,
+      "description": "Net pay normalized to monthly amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [7, 7]
+      }
+    },
+    {
+      "name": "pay_cycle",
+      "data_type": "text",
+      "required": true,
+      "description": "Pay frequency (weekly, fortnightly, monthly)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [8, 8]
+      }
+    },
+    {
+      "name": "s3_object_reference",
+      "data_type": "text",
+      "required": true,
+      "description": "S3 reference to stored payslip file",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [9, 9]
+      }
+    },
+    {
+      "name": "created_at",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record creation timestamp",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [10, 10]
+      }
+    },
+    {
+      "name": "updated_at",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record last update timestamp",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["postgres", "migrations", "000010_payslips.up.sql"],
+        "lines": [11, 11]
+      }
+    }
+  ]
+}

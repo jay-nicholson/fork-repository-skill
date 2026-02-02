@@ -1,0 +1,35 @@
+{
+  "id": "lender_rules.credit_scores",
+  "name": "Credit Score Rules",
+  "description": "Credit bureau score threshold checks",
+  "phase": "credit",
+  "deterministic": true,
+  "derivation_ref": "evaluate_credit_score_rules",
+  "lenders_with_rules": ["jacaranda", "latitude", "nowfinance", "ourmoneymarket", "plenti", "wisr"],
+  "fields": [
+    {
+      "name": "equifax_one_score",
+      "data_type": "number",
+      "required": false,
+      "description": "Equifax One Score"
+    },
+    {
+      "name": "equifax_comprehensive_score",
+      "data_type": "number",
+      "required": false,
+      "description": "Equifax Comprehensive Score"
+    },
+    {
+      "name": "equifax_xy_pf_score",
+      "data_type": "number",
+      "required": false,
+      "description": "Equifax XY PF Score"
+    },
+    {
+      "name": "experian_score",
+      "data_type": "number",
+      "required": false,
+      "description": "Experian Score"
+    }
+  ]
+}

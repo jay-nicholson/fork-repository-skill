@@ -1,0 +1,51 @@
+{
+  "id": "loan_application.other_income",
+  "name": "Loan Other Income",
+  "description": "Other income source details",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [146, 150]
+  },
+  "fields": [
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Type of other income source",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [147, 147]
+      }
+    },
+    {
+      "name": "amount",
+      "json_tag": "amount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Income amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [148, 148]
+      }
+    },
+    {
+      "name": "frequency",
+      "json_tag": "frequency",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Payment frequency (e.g., weekly, monthly, annually)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [149, 149]
+      }
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "id": "loan_application.applicant",
+  "name": "Loan Applicant",
+  "description": "Applicant personal information",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [86, 97]
+  },
+  "fields": [
+    {
+      "name": "first_name",
+      "json_tag": "firstName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Applicant's first name",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [87, 87]
+      }
+    },
+    {
+      "name": "middle_name",
+      "json_tag": "middleName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Applicant's middle name",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [88, 88]
+      }
+    },
+    {
+      "name": "last_name",
+      "json_tag": "lastName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Applicant's last name",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [89, 89]
+      }
+    },
+    {
+      "name": "date_of_birth",
+      "json_tag": "dateOfBirth",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Date of birth (YYYY-MM-DD format)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [90, 90]
+      }
+    },
+    {
+      "name": "gender",
+      "json_tag": "gender",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Applicant's gender",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [91, 91]
+      }
+    },
+    {
+      "name": "email",
+      "json_tag": "email",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Email address",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [92, 92]
+      }
+    },
+    {
+      "name": "phone_number",
+      "json_tag": "phoneNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Phone number",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [93, 93]
+      }
+    },
+    {
+      "name": "marital_status",
+      "json_tag": "maritalStatus",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Marital status",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [94, 94]
+      }
+    },
+    {
+      "name": "number_of_dependents",
+      "json_tag": "numberOfDependents",
+      "go_type": "*int",
+      "data_type": "number",
+      "required": false,
+      "description": "Number of dependents",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [95, 95]
+      }
+    },
+    {
+      "name": "australian_permanent_resident",
+      "json_tag": "australianPermanentResident",
+      "go_type": "*bool",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether the applicant is an Australian permanent resident",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [96, 96]
+      }
+    }
+  ]
+}

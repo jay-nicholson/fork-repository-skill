@@ -1,0 +1,65 @@
+{
+  "id": "extract_date_of_birth",
+  "name": "Extract Date of Birth",
+  "description": "Extract date of birth from member. Also computes age via YearsBetween. Used in Header component.",
+  "steps": [
+    {
+      "id": "get_member",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Get filtered member for user"
+    },
+    {
+      "id": "extract_dob",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_member"
+        },
+        {
+          "literal": "dob"
+        }
+      ],
+      "description": "Extract dob (date of birth)"
+    }
+  ],
+  "output": {
+    "step": "extract_dob",
+    "description": "Date of birth (also used to compute age)",
+    "type": "text"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "member.dob"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_profile.go"
+    ],
+    "lines": [
+      53,
+      59
+    ],
+    "symbol": "MapUserProfile"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header",
+      "label": "Age",
+      "format": "number"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "id": "lender_rules.income",
+  "name": "Income Rules",
+  "description": "Minimum income threshold checks. Input: declared monthly post-tax employment income.",
+  "phase": "declared",
+  "deterministic": true,
+  "derivation_ref": "evaluate_income_rules",
+  "lenders_with_rules": ["jacaranda", "latitude", "nowfinance", "ourmoneymarket", "plenti", "wisr"],
+  "fields": [
+    {
+      "name": "declared_monthly_post_tax_employment_income",
+      "data_type": "number",
+      "required": true,
+      "description": "Monthly post-tax employment income from loan application"
+    },
+    {
+      "name": "threshold",
+      "data_type": "number",
+      "required": true,
+      "description": "Lender-specific minimum income threshold"
+    }
+  ]
+}

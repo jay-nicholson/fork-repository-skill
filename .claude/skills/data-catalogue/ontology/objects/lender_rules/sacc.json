@@ -1,0 +1,29 @@
+{
+  "id": "lender_rules.sacc",
+  "name": "SACC Rules",
+  "description": "Small Amount Credit Contract (payday loan) history checks. Non-deterministic - uses detected transaction data.",
+  "phase": "detected",
+  "deterministic": false,
+  "derivation_ref": "evaluate_sacc_rules",
+  "lenders_with_rules": ["jacaranda", "latitude", "nowfinance", "ourmoneymarket", "plenti", "wisr"],
+  "fields": [
+    {
+      "name": "sacc_credit_count",
+      "data_type": "number",
+      "required": false,
+      "description": "Number of SACC credits detected in transactions"
+    },
+    {
+      "name": "sacc_transaction_count",
+      "data_type": "number",
+      "required": false,
+      "description": "Total SACC transaction count"
+    },
+    {
+      "name": "sacc_unique_lender_count",
+      "data_type": "number",
+      "required": false,
+      "description": "Number of unique SACC lenders"
+    }
+  ]
+}

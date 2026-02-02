@@ -1,0 +1,43 @@
+{
+  "id": "extract_credit_account_limit",
+  "name": "Extract Credit Account Limit",
+  "description": "Extract credit limit (amount) from CCR credit account for display",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_credit_accounts" }],
+      "description": "Get user's CCR credit accounts"
+    },
+    {
+      "id": "extract_field",
+      "operation": "select",
+      "inputs": [
+        { "step": "get_accounts" },
+        { "literal": "amount" }
+      ],
+      "description": "Extract amount (limit) field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Credit limit amount"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_credit_accounts"],
+    "fields": ["credit_account.amount"]
+  },
+  "ui_outputs": [
+    {
+      "component": "FinancialMetrics",
+      "label": "Limit",
+      "format": "currency"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": ["src", "views", "summary-v2", "components", "credit-accounts", "CreditAccountCard.tsx"],
+    "lines": [60, 60],
+    "symbol": "limit"
+  }
+}

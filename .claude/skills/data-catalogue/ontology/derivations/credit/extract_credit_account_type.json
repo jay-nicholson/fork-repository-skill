@@ -1,0 +1,43 @@
+{
+  "id": "extract_credit_account_type",
+  "name": "Extract Credit Account Type",
+  "description": "Extract account type from CCR credit account for display",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_credit_accounts" }],
+      "description": "Get user's CCR credit accounts"
+    },
+    {
+      "id": "extract_field",
+      "operation": "select",
+      "inputs": [
+        { "step": "get_accounts" },
+        { "literal": "type" }
+      ],
+      "description": "Extract type field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Account type string (e.g., credit card, personal loan, mortgage)"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_credit_accounts"],
+    "fields": ["credit_account.type"]
+  },
+  "ui_outputs": [
+    {
+      "component": "AccountInfo",
+      "label": "Account Type",
+      "format": "text"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": ["src", "views", "summary-v2", "components", "credit-accounts", "CreditAccountCard.tsx"],
+    "lines": [36, 36],
+    "symbol": "accountType"
+  }
+}

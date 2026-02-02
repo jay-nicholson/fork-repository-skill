@@ -1,0 +1,40 @@
+{
+  "id": "aggregate_streams",
+  "name": "Extract Transaction Streams",
+  "description": "Extract the pre-computed streams array from user_transaction_analysis. Streams were created by compute_transaction_streams (accounts + transactions → buildStreams → categorizeStreams → persisted to user_transaction_analysis). This derivation reads the already-computed streams for downstream detected value calculations.",
+  "steps": [
+    {
+      "id": "streams",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "filter_user_transactions"
+        },
+        {
+          "literal": "streams"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "streams",
+    "description": "Array of transaction streams from user_transaction_analysis.streams"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_transactions"
+    ]
+  },
+  "source": {
+    "repo": "categorizer",
+    "path": [
+      "model",
+      "user_transaction_analysis.go"
+    ],
+    "lines": [
+      129,
+      129
+    ],
+    "symbol": "UserTransactionAnalysis.Streams"
+  }
+}

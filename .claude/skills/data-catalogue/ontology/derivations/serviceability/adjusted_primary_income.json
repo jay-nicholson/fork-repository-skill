@@ -1,0 +1,44 @@
+{
+  "id": "adjusted_primary_income",
+  "name": "Adjusted Primary Income",
+  "description": "Lower of declared vs detected primary income (conservative approach)",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "min",
+      "inputs": [
+        {
+          "derivation": "declared_primary_income"
+        },
+        {
+          "derivation": "detected_primary_income"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "declared_primary_income",
+      "detected_primary_income"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - primary income logic"
+  }
+}

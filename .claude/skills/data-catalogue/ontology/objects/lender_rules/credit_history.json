@@ -1,0 +1,53 @@
+{
+  "id": "lender_rules.credit_history",
+  "name": "Credit History Rules",
+  "description": "Credit report adverse event checks (defaults, bankruptcy, repayment status, hardship, etc.)",
+  "phase": "credit",
+  "deterministic": true,
+  "derivation_ref": "evaluate_credit_history_rules",
+  "lenders_with_rules": ["jacaranda", "latitude", "nowfinance", "ourmoneymarket", "plenti", "wisr"],
+  "fields": [
+    {
+      "name": "has_defaults",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Any defaults on credit file"
+    },
+    {
+      "name": "has_bankruptcy",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Bankruptcy on credit file"
+    },
+    {
+      "name": "repayment_status",
+      "data_type": "text",
+      "required": false,
+      "description": "Current repayment status"
+    },
+    {
+      "name": "has_financial_hardship",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Financial hardship indicators"
+    },
+    {
+      "name": "primary_file_age_months",
+      "data_type": "number",
+      "required": false,
+      "description": "Age of primary credit file in months"
+    },
+    {
+      "name": "has_judgements",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Court judgements on file"
+    },
+    {
+      "name": "customer_enquiry_count",
+      "data_type": "number",
+      "required": false,
+      "description": "Number of credit enquiries"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "filter_user_credit_enquiries",
+  "name": "Filter User Credit Enquiries",
+  "description": "Filter credit_enquiries by uid. Query: SELECT ... FROM credit_enquiries WHERE uid = $1",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists via filter_user_member"
+    },
+    {
+      "id": "filter_by_uid",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "credit_enquiry"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "WHERE uid = :user_id"
+    }
+  ],
+  "output": {
+    "step": "filter_by_uid",
+    "description": "All credit_enquiry records for user"
+  },
+  "depends_on": {
+    "models": [
+      "credit_enquiry"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "credit_enquiry.uid"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "enquiry.go"
+    ],
+    "symbol": "GetForUser"
+  },
+  "category": "selection"
+}

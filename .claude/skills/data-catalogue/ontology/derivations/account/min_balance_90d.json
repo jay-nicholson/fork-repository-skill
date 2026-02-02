@@ -1,0 +1,85 @@
+{
+  "id": "min_balance_90d",
+  "name": "Minimum Balance (90 Days)",
+  "description": "Finds the lowest balance in the last 90 days from balance history",
+  "steps": [
+    {
+      "id": "get_balance_history",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_account_balances"
+        }
+      ],
+      "description": "Get user's historical balance records"
+    },
+    {
+      "id": "filter_recent",
+      "operation": "filter",
+      "inputs": [
+        {
+          "step": "get_balance_history"
+        }
+      ],
+      "predicate": {
+        "field": "date",
+        "operator": "gte",
+        "value": { "relative": -90, "unit": "d" }
+      },
+      "description": "Filter to last 90 days"
+    },
+    {
+      "id": "extract_balance",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "filter_recent"
+        },
+        {
+          "literal": "balance"
+        }
+      ],
+      "description": "Extract balance values"
+    },
+    {
+      "id": "find_min",
+      "operation": "min",
+      "inputs": [
+        {
+          "step": "extract_balance"
+        }
+      ],
+      "description": "Find minimum balance value"
+    }
+  ],
+  "output": {
+    "step": "find_min",
+    "type": "number",
+    "nullable": true,
+    "description": "Lowest balance value in the 90-day period"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_account_balances"],
+    "fields": [
+      "account_historical_balance.date",
+      "account_historical_balance.balance"
+    ]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.lowest_balance_90d"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "label": "Lowest Balance (90d)",
+      "format": "currency"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [96, 125],
+    "symbol": "calculateBalanceMetrics"
+  }
+}

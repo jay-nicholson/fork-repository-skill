@@ -1,0 +1,23 @@
+{
+  "id": "lender_rules.capacity",
+  "name": "Capacity Rules",
+  "description": "Repayment capacity and transaction-based checks. Non-deterministic - uses calculated/detected data.",
+  "phase": "detected",
+  "deterministic": false,
+  "derivation_ref": "evaluate_capacity_rules",
+  "lenders_with_rules": ["jacaranda", "ourmoneymarket"],
+  "fields": [
+    {
+      "name": "monthly_repayment_capacity",
+      "data_type": "number",
+      "required": false,
+      "description": "Calculated monthly repayment capacity"
+    },
+    {
+      "name": "transactions_total_credit_sum",
+      "data_type": "number",
+      "required": false,
+      "description": "Total credit sum from transactions in last 3 months"
+    }
+  ]
+}

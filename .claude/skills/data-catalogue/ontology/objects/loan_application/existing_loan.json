@@ -1,0 +1,64 @@
+{
+  "id": "loan_application.existing_loan",
+  "name": "Loan Existing Loan",
+  "description": "Existing loan liability details",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [174, 179]
+  },
+  "fields": [
+    {
+      "name": "repayment_amount",
+      "json_tag": "repaymentAmount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Regular repayment amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [175, 175]
+      }
+    },
+    {
+      "name": "repayment_frequency",
+      "json_tag": "repaymentFrequency",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Frequency of repayments (e.g., weekly, monthly)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [176, 176]
+      }
+    },
+    {
+      "name": "balance",
+      "json_tag": "balance",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Outstanding loan balance",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [177, 177]
+      }
+    },
+    {
+      "name": "for_consolidation",
+      "json_tag": "forConsolidation",
+      "go_type": "*bool",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether this loan is being consolidated",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [178, 178]
+      }
+    }
+  ]
+}

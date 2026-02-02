@@ -1,0 +1,67 @@
+{
+  "id": "extract_residence_type",
+  "name": "Extract Residence Type",
+  "description": "Extract residence type from loan_application.current_residence. Used in Header component.",
+  "steps": [
+    {
+      "id": "get_loan_app",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        }
+      ],
+      "description": "Get latest loan application for user"
+    },
+    {
+      "id": "extract_type",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_loan_app"
+        },
+        {
+          "literal": "current_residence.type"
+        }
+      ],
+      "description": "Extract type from loan_application.current_residence"
+    }
+  ],
+  "output": {
+    "step": "extract_type",
+    "description": "Residence type (owner, renting, boarding, etc.)",
+    "type": "text"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application"
+    ],
+    "fields": [
+      "loan_application.current_residence.type"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "modules",
+      "loanapplication",
+      "v2",
+      "domain",
+      "readmodels",
+      "partial_profile.go"
+    ],
+    "lines": [
+      110,
+      122
+    ],
+    "symbol": "handleResidenceEdited"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header",
+      "label": "Housing",
+      "format": "text"
+    }
+  ]
+}

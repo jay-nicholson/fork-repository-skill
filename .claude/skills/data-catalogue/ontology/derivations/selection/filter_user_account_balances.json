@@ -1,0 +1,54 @@
+{
+  "id": "filter_user_account_balances",
+  "name": "Filter User Account Balances",
+  "description": "Filter historical balance records by user_id. The account_historical_balances table has a user_id column for direct filtering.",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists and is not deleted"
+    },
+    {
+      "id": "filter_balances",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "account_historical_balance"
+        }
+      ],
+      "predicate": {
+        "field": "user_id",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "Filter balances by user_id"
+    }
+  ],
+  "output": {
+    "step": "filter_balances",
+    "description": "Historical balance records for all of the user's accounts"
+  },
+  "depends_on": {
+    "models": ["account_historical_balance"],
+    "derivations": ["filter_user_member"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountBalanceHistory",
+      "label": "Balance History Sparkline",
+      "format": "currency",
+      "description": "CDR account balance history chart"
+    }
+  ],
+  "source": {
+    "repo": "open-banker",
+    "path": ["db", "postgres", "model", "account_historic_balance.go"],
+    "lines": [73, 80],
+    "symbol": "AccountHistoricalBalances.Select"
+  }
+}

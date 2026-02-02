@@ -1,0 +1,71 @@
+{
+  "id": "classify_account_type",
+  "name": "Classify Account Type",
+  "description": "Classifies accounts as asset, liability, or unknown based on wemoney_type_1",
+  "steps": [
+    {
+      "id": "get_account",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_accounts"
+        }
+      ],
+      "description": "Get user's filtered accounts"
+    },
+    {
+      "id": "get_type",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_account"
+        },
+        {
+          "literal": "wemoney_type_1"
+        }
+      ],
+      "description": "Extract wemoney_type_1 field"
+    },
+    {
+      "id": "classify",
+      "operation": "map",
+      "inputs": [
+        {
+          "step": "get_type"
+        }
+      ],
+      "mappings": [
+        { "when": ["Bank Accounts", "Investments & Super", "Rewards", "Insurance"], "then": "asset" },
+        { "when": ["Credit Cards", "Loans", "Bills"], "then": "liability" }
+      ],
+      "default": "unknown",
+      "description": "Map wemoney_type_1 to classification: asset, liability, or unknown"
+    }
+  ],
+  "output": {
+    "step": "classify",
+    "description": "Account classification: asset, liability, or unknown"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts"],
+    "fields": ["account.wemoney_type_1"]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.classification"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "label": "Account Classification",
+      "format": "text",
+      "description": "asset, liability, or unknown"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [69, 89],
+    "symbol": "classifyAccount"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "user_transaction_analysis.period",
+  "name": "Analysis Period",
+  "description": "Enum defining the analysis time period for transaction analysis snapshots",
+  "type": "enum",
+  "data_type": "text",
+  "allowed_values": ["12mo", "90d"],
+  "backend_ref": {
+    "repo": "categorizer",
+    "path": ["model", "user_transaction_analysis.go"],
+    "lines": [22, 27],
+    "symbol": "AnalysisPeriod"
+  },
+  "notes": {
+    "12mo": "12-month analysis period - standard for serviceability calculations",
+    "90d": "90-day analysis period - used for shorter-term patterns"
+  },
+  "fields": []
+}

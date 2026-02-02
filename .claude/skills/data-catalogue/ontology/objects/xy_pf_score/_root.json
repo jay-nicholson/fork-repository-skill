@@ -1,0 +1,101 @@
+{
+  "id": "xy_pf_score",
+  "name": "XY PF Score",
+  "description": "Equifax XYPF credit score stored in Creditor database. One score per user.",
+  "source": {
+    "type": "database",
+    "database": "creditor",
+    "table": "xy_pf_scores"
+  },
+  "backend_ref": {
+    "repo": "creditor",
+    "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+    "lines": [3, 11]
+  },
+  "fields": [
+    {
+      "name": "uid",
+      "json_tag": "uid",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier - foreign key to users (primary key)",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+        "lines": [4, 4],
+        "field_name": "uid"
+      }
+    },
+    {
+      "name": "month",
+      "json_tag": "month",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Month of the score (YYYY-MM format)",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+        "lines": [5, 5],
+        "field_name": "month"
+      }
+    },
+    {
+      "name": "score",
+      "json_tag": "score",
+      "sql_type": "INTEGER",
+      "data_type": "number",
+      "required": true,
+      "description": "XYPF credit score value",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+        "lines": [6, 6],
+        "field_name": "score"
+      }
+    },
+    {
+      "name": "timestamp",
+      "json_tag": "timestamp",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Timestamp when score was recorded",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+        "lines": [7, 7],
+        "field_name": "timestamp"
+      }
+    },
+    {
+      "name": "added",
+      "json_tag": "added",
+      "sql_type": "TIMESTAMPTZ",
+      "data_type": "datetime",
+      "required": true,
+      "description": "When score was added to the database",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+        "lines": [8, 8],
+        "field_name": "added"
+      }
+    },
+    {
+      "name": "updated",
+      "json_tag": "updated",
+      "sql_type": "TIMESTAMPTZ",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Last updated timestamp",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": ["storage", "db", "migrations", "000021_add_xy_pf_score_table.up.sql"],
+        "lines": [9, 9],
+        "field_name": "updated"
+      }
+    }
+  ]
+}

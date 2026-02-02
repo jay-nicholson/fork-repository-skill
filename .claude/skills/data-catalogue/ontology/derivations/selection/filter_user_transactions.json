@@ -1,0 +1,75 @@
+{
+  "id": "filter_user_transactions",
+  "name": "Select Latest User Transaction Analysis",
+  "description": "Filter user_transaction_analysis records by user_id, sort by as_of_date descending, and return the most recent analysis snapshot. The data in user_transaction_analysis was created by compute_transaction_streams (aggregating accounts + transactions into streams). Depends on filter_user_member to ensure user exists and is not deleted.",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ]
+    },
+    {
+      "id": "filter_by_user",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "user_transaction_analysis"
+        }
+      ],
+      "predicate": {
+        "field": "user_id",
+        "operator": "eq",
+        "value": ":user_id"
+      }
+    },
+    {
+      "id": "sorted_by_date",
+      "operation": "sort",
+      "inputs": [
+        {
+          "step": "filter_by_user"
+        }
+      ],
+      "by": "as_of_date",
+      "order": "desc"
+    },
+    {
+      "id": "latest",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "sorted_by_date"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "latest",
+    "description": "The most recent user_transaction_analysis record for this user"
+  },
+  "depends_on": {
+    "models": [
+      "user_transaction_analysis"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ]
+  },
+  "source": {
+    "repo": "categorizer",
+    "path": [
+      "db",
+      "postgres",
+      "user_transaction_analysis.go"
+    ],
+    "lines": [
+      22,
+      59
+    ],
+    "symbol": "GetUserTransactionAnalysis"
+  }
+}

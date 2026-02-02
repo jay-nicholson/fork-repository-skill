@@ -1,0 +1,51 @@
+{
+  "id": "loan_application.quote_failure",
+  "name": "Loan Quote Failure",
+  "description": "Information about a failed quote attempt",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [182, 186]
+  },
+  "fields": [
+    {
+      "name": "lender",
+      "json_tag": "lender",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Lender identifier",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [183, 183]
+      }
+    },
+    {
+      "name": "failure_type",
+      "json_tag": "failureType",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Type or category of failure",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [184, 184]
+      }
+    },
+    {
+      "name": "message",
+      "json_tag": "message",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Failure message or reason",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [185, 185]
+      }
+    }
+  ]
+}

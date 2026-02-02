@@ -1,0 +1,56 @@
+{
+  "id": "loan_application.address",
+  "name": "Address",
+  "description": "A physical address",
+  "fields": [
+    {
+      "name": "unit_number",
+      "data_type": "text",
+      "required": false,
+      "description": "Unit or apartment number"
+    },
+    {
+      "name": "street_number",
+      "data_type": "text",
+      "required": true,
+      "description": "Street number"
+    },
+    {
+      "name": "street_name",
+      "data_type": "text",
+      "required": true,
+      "description": "Street name"
+    },
+    {
+      "name": "street_type",
+      "data_type": "text",
+      "required": false,
+      "description": "Street type (St, Ave, Rd, etc.)"
+    },
+    {
+      "name": "suburb",
+      "data_type": "text",
+      "required": true,
+      "description": "Suburb or city"
+    },
+    {
+      "name": "state",
+      "data_type": "text",
+      "required": true,
+      "description": "State or territory",
+      "allowed_values": ["NSW", "VIC", "QLD", "SA", "WA", "TAS", "ACT", "NT"]
+    },
+    {
+      "name": "post_code",
+      "data_type": "text",
+      "required": true,
+      "description": "Postal code"
+    },
+    {
+      "name": "country_code",
+      "data_type": "text",
+      "required": false,
+      "description": "Country code"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "filter_user_comprehensive_scores",
+  "name": "Filter User Comprehensive Scores",
+  "description": "Filter comprehensive_scores by uid. Query: SELECT ... FROM comprehensive_scores WHERE uid = $1",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists via filter_user_member"
+    },
+    {
+      "id": "filter_by_uid",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "comprehensive_score"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "WHERE uid = :user_id"
+    }
+  ],
+  "output": {
+    "step": "filter_by_uid",
+    "description": "All comprehensive_score records for user"
+  },
+  "depends_on": {
+    "models": [
+      "comprehensive_score"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "comprehensive_score.uid"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "comp_score.go"
+    ],
+    "symbol": "GetLatest"
+  },
+  "category": "selection"
+}

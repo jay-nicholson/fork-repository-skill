@@ -22,6 +22,8 @@ MODELS_PATH: public/data-catalogue/models/
 DERIVATIONS_PATH: public/data-catalogue/derivations/
 DOCS_PATH: docs/
 VALIDATION_API: http://localhost:3000/api/validate
+LOCAL_CACHE: .claude/skills/data-catalogue/ontology/
+SYNC_MANIFEST: .claude/skills/data-catalogue/.sync-manifest.json
 
 ## Source Repository Structure
 
@@ -182,3 +184,58 @@ Key source files for derivation logic:
 | HEM benchmark | `brightmatch/src/shared/queries/member/map_hem.go:66-94` |
 | Net capacity | `brightmatch/src/shared/queries/member/calculate_net_capacity.go:46-158` |
 | Rule evaluation | `brightmatch/src/shared/matchingengine/engine.go:126-160` |
+
+## Sync Workflow (Closed Loop)
+
+The data catalogue follows a closed-loop sync pattern:
+
+```
+PULL → EDIT → VALIDATE → PUSH → PULL
+```
+
+### Commands
+
+| Command | Purpose | Permission |
+|---------|---------|------------|
+| `./scripts/sync/sync-data-catalogue.sh --full` | Full sync from remote | SAFE |
+| `./scripts/sync/sync-data-catalogue.sh --incremental` | Skip if in sync | SAFE |
+| `./scripts/sync/check-drift.sh` | Check if local has drifted | SAFE |
+| `./scripts/sync/validate-local.sh` | Validate local JSON | SAFE |
+| `./scripts/sync/push-changes.sh` | Create PR from local edits | BATCH_CONFIRM |
+
+### Local Cache Structure
+
+```
+.claude/skills/data-catalogue/
+├── .sync-manifest.json          # Sync state tracking
+├── ontology/
+│   ├── objects/                 # Synced models
+│   │   ├── member/_root.json
+│   │   ├── loan_application/_root.json
+│   │   └── ...
+│   ├── derivations/             # Synced derivations
+│   │   ├── serviceability/
+│   │   └── ...
+│   ├── links/                   # (future)
+│   └── actions/                 # (future kinetic layer)
+└── docs/                        # Synced documentation
+```
+
+### When to Sync
+
+1. **Starting a session** — Run `check-drift.sh` to see if updates available
+2. **Before editing ontology** — Ensure local cache is current
+3. **After pushing changes** — Pull to close the loop
+4. **Investigating data issues** — Fresh sync ensures accuracy
+
+### Manifest
+
+The `.sync-manifest.json` tracks:
+- Source commit SHA
+- Sync timestamp
+- List of synced models and derivation categories
+
+Use `jq` to inspect:
+```bash
+jq . .claude/skills/data-catalogue/.sync-manifest.json
+```

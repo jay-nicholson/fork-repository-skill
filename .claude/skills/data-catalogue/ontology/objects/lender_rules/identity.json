@@ -1,0 +1,17 @@
+{
+  "id": "lender_rules.identity",
+  "name": "Identity Rules",
+  "description": "Identity document type eligibility checks",
+  "phase": "declared",
+  "deterministic": true,
+  "derivation_ref": "evaluate_identity_rules",
+  "lenders_with_rules": ["nowfinance", "wisr"],
+  "fields": [
+    {
+      "name": "identity_document_type",
+      "data_type": "text",
+      "required": true,
+      "description": "Type of identity document (drivers_licence, passport, etc.)"
+    }
+  ]
+}

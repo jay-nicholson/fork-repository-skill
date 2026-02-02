@@ -1,0 +1,114 @@
+{
+  "id": "detected_loans",
+  "name": "Detected Loan Repayments",
+  "description": "Sum of active, regular debit streams with category starting with 'transfers.loan_repayment'. Per MapDetected source.",
+  "steps": [
+    {
+      "id": "filter_loan_streams",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "debit"
+          },
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active"
+          },
+          {
+            "field": "cadence_category",
+            "operator": "neq",
+            "value": "Irregular"
+          },
+          {
+            "field": "category.hem_expense_type",
+            "operator": "is_not_null"
+          },
+          {
+            "field": "category.code",
+            "operator": "starts_with",
+            "value": "transfers.loan_repayment"
+          }
+        ]
+      },
+      "description": "Filter for transfers.loan_repayment.* streams"
+    },
+    {
+      "id": "sum_monthly",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "filter_loan_streams"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "streams",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly",
+          "nullable": true
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "shared",
+            "queries",
+            "member",
+            "map_detected.go"
+          ],
+          "lines": [
+            65,
+            68
+          ],
+          "symbol": "calculateMonthlyAmount per stream, then sum"
+        },
+        "description": "Sum monthly amounts from loan repayment streams."
+      }
+    }
+  ],
+  "output": {
+    "step": "sum_monthly",
+    "unit": "AUD_monthly",
+    "description": "Total monthly loan repayments from transaction streams"
+  },
+  "depends_on": {
+    "derivations": [
+      "aggregate_streams"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      65,
+      68
+    ],
+    "symbol": "MapDetected - loans calculation"
+  },
+  "notes": {
+    "included_categories": [
+      "transfers.loan_repayment.*"
+    ]
+  }
+}

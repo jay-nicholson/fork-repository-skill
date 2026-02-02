@@ -1,0 +1,35 @@
+{
+  "id": "net_capacity",
+  "name": "Net Capacity",
+  "description": "Net monthly capacity: total income minus total expenses",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "subtract",
+      "inputs": [
+        {
+          "derivation": "total_income"
+        },
+        {
+          "derivation": "total_expenses"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "symbol": "CalculateNetCapacity"
+  },
+  "terminal": true
+}

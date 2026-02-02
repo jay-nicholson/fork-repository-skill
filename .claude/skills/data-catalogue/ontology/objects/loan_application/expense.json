@@ -1,0 +1,25 @@
+{
+  "id": "loan_application.expense",
+  "name": "Expense",
+  "description": "A declared expense on the loan application",
+  "fields": [
+    {
+      "name": "type",
+      "data_type": "text",
+      "required": true,
+      "description": "Expense type"
+    },
+    {
+      "name": "amount",
+      "data_type": "number",
+      "required": true,
+      "description": "Expense amount"
+    },
+    {
+      "name": "frequency",
+      "data_type": "text",
+      "required": true,
+      "description": "How often the expense occurs"
+    }
+  ]
+}

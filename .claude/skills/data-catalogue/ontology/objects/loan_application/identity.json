@@ -1,0 +1,103 @@
+{
+  "id": "loan_application.identity",
+  "name": "Loan Identity",
+  "description": "Identity verification document details (de-identified)",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [100, 114]
+  },
+  "fields": [
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Type of identity document (drivers_license or passport)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [101, 101]
+      }
+    },
+    {
+      "name": "licence_state",
+      "json_tag": "licenceState",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "State/territory that issued the driver's license",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [104, 104]
+      }
+    },
+    {
+      "name": "licence_number",
+      "json_tag": "licenceNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Driver's license number (de-identified)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [105, 105]
+      }
+    },
+    {
+      "name": "card_number",
+      "json_tag": "cardNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Card number on driver's license",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [106, 106]
+      }
+    },
+    {
+      "name": "passport_country",
+      "json_tag": "passportCountry",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Country that issued the passport",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [109, 109]
+      }
+    },
+    {
+      "name": "passport_number",
+      "json_tag": "passportNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Passport number (de-identified)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [110, 110]
+      }
+    },
+    {
+      "name": "expiry_date",
+      "json_tag": "expiryDate",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Document expiry date",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [113, 113]
+      }
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "id": "portal_account",
+  "name": "Portal Account",
+  "description": "API response model for connected bank accounts in the admin portal. Combines data from categorizer accounts, openbanker consents (for org_name), historical balances, and user_transaction_analysis (for main account identification and transaction stats). NOTE: Account ID is NOT included in the response - it's used internally but not exposed.",
+  "source": {
+    "type": "derived",
+    "derived_from": {
+      "derivations": ["filter_user_accounts", "filter_user_account_balances", "filter_user_transactions"],
+      "transform": "map_accounts"
+    }
+  },
+  "depends_on": {
+    "models": ["consent"],
+    "derivations": [
+      "filter_user_accounts",
+      "filter_user_account_balances",
+      "filter_user_transactions",
+      "map_account_status",
+      "classify_account_type",
+      "identify_main_account",
+      "aggregate_account_transactions",
+      "count_days_negative_90d",
+      "min_balance_90d"
+    ]
+  },
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [12, 30],
+    "symbol": "Account"
+  },
+  "notes": {
+    "missing_id": "The source account.ID is used internally (for transaction stats, main account check, balance history lookup) but is NOT included in the API response. Frontend has id?: number as optional because it's never populated."
+  },
+  "fields": [
+    {
+      "name": "org_name",
+      "json_tag": "orgName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Organization/institution name from consent metadata",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [13, 13],
+        "field_name": "OrgName"
+      }
+    },
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Account type from wemoney_type_1 (e.g., 'Bank Accounts', 'Credit Cards', 'Loans')",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [14, 14],
+        "field_name": "Type"
+      }
+    },
+    {
+      "name": "sub_type",
+      "json_tag": "subType",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Account sub-type from wemoney_type_2 (e.g., 'Savings', 'Transaction', 'Personal Loan')",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [15, 15],
+        "field_name": "SubType"
+      }
+    },
+    {
+      "name": "name",
+      "json_tag": "name",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Account name from the bank",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [16, 16],
+        "field_name": "Name"
+      }
+    },
+    {
+      "name": "status",
+      "json_tag": "status",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Account status mapped from raw status: ACTIVE -> 'Open', TO_BE_CLOSED -> 'Closed'",
+      "derivation_ref": "map_account_status",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [17, 17],
+        "field_name": "Status"
+      }
+    },
+    {
+      "name": "classification",
+      "json_tag": "classification",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Asset/liability classification based on account type. ASSET: Bank Accounts, Investments & Super, Rewards, Insurance. LIABILITY: Credit Cards, Loans, Bills. UNKNOWN: other",
+      "derivation_ref": "classify_account_type",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [18, 18],
+        "field_name": "Classification"
+      }
+    },
+    {
+      "name": "number_of_transactions",
+      "json_tag": "numberOfTransactions",
+      "go_type": "*int",
+      "data_type": "number",
+      "required": false,
+      "description": "Count of transactions for this account",
+      "derivation_ref": "aggregate_account_transactions",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [19, 19],
+        "field_name": "NumberOfTransactions"
+      }
+    },
+    {
+      "name": "transaction_period_start",
+      "json_tag": "transactionPeriodStart",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Earliest transaction date for this account (YYYY-MM-DD)",
+      "derivation_ref": "aggregate_account_transactions",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [20, 20],
+        "field_name": "TransactionPeriodStart"
+      }
+    },
+    {
+      "name": "transaction_period_end",
+      "json_tag": "transactionPeriodEnd",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Latest transaction date for this account (YYYY-MM-DD)",
+      "derivation_ref": "aggregate_account_transactions",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [21, 21],
+        "field_name": "TransactionPeriodEnd"
+      }
+    },
+    {
+      "name": "interest_rate",
+      "json_tag": "interestRate",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Interest rate as percentage (normalized from source)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [22, 22],
+        "field_name": "InterestRate"
+      }
+    },
+    {
+      "name": "balance",
+      "json_tag": "balance",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Current account balance converted from decimal to float64",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [23, 23],
+        "field_name": "Balance"
+      }
+    },
+    {
+      "name": "is_main_account",
+      "json_tag": "isMainAccount",
+      "go_type": "*bool",
+      "data_type": "boolean",
+      "required": false,
+      "description": "True if this account matches user_transaction_analysis.main_financial_institution_account_id",
+      "derivation_ref": "identify_main_account",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [24, 24],
+        "field_name": "IsMainAccount"
+      }
+    },
+    {
+      "name": "balance_history",
+      "json_tag": "balanceHistory",
+      "go_type": "*[]HistoricalBalance",
+      "data_type": "array",
+      "required": false,
+      "description": "Historical balance records for this account",
+      "model_ref": "portal_account.historical_balance",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [25, 25],
+        "field_name": "BalanceHistory"
+      }
+    },
+    {
+      "name": "days_negative_90d",
+      "json_tag": "daysNegative90d",
+      "go_type": "*int",
+      "data_type": "number",
+      "required": false,
+      "description": "Number of days with negative balance in the last 90 days",
+      "derivation_ref": "count_days_negative_90d",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [26, 26],
+        "field_name": "DaysNegative90d"
+      }
+    },
+    {
+      "name": "lowest_balance_90d",
+      "json_tag": "lowestBalance90d",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Lowest balance in the last 90 days",
+      "derivation_ref": "min_balance_90d",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+        "lines": [27, 27],
+        "field_name": "LowestBalance90d"
+      }
+    }
+  ]
+}

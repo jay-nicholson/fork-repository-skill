@@ -1,0 +1,273 @@
+{
+  "id": "user_transaction_analysis",
+  "name": "User Transaction Analysis",
+  "description": "Aggregated transaction analysis with streams, computed from accounts and transactions tables, stored as JSONB. The analysis is triggered when transactions are fetched (via GetTransactions), running CalculateUserTransactionAnalysis which groups transactions into streams, calculates statistics, and categorizes each stream.",
+  "source": {
+    "type": "database",
+    "database": "categorizer",
+    "table": "user_transaction_analysis",
+    "computed_from": {
+      "inputs": [
+        {
+          "model": "account",
+          "database": "categorizer",
+          "table": "accounts",
+          "description": "User's connected bank accounts from OpenBanking/Yodlee (see account model in catalogue)"
+        },
+        {
+          "model": "transaction",
+          "database": "categorizer",
+          "table": "transactions",
+          "description": "User's bank transactions from OpenBanking/Yodlee (see transaction model in catalogue)"
+        }
+      ],
+      "process": {
+        "function": "CalculateUserTransactionAnalysis",
+        "repo": "categorizer",
+        "path": ["categorizer", "analysis", "analysis.go"],
+        "lines": [65, 182],
+        "description": "Groups transactions into streams by (AccountID, Direction, Type, MCC, Description similarity ≥0.75), calculates cadence and amount statistics, categorizes via rules + ML model, then persists to user_transaction_analysis table"
+      }
+    }
+  },
+  "depends_on": {
+    "models": ["account", "transaction"],
+    "derivations": ["categorize_streams"]
+  },
+  "populated_by": {
+    "derivation": "categorize_streams",
+    "description": "Data is computed by compute_transaction_streams → categorize_streams → persisted here"
+  },
+  "backend_ref": {
+    "repo": "categorizer",
+    "path": ["db", "postgres", "user_transaction_analysis.go"],
+    "lines": [237, 343],
+    "symbol": "UpsertUserTransactionAnalysis"
+  },
+  "fields": [
+    {
+      "name": "user_id",
+      "data_type": "uuid",
+      "required": true,
+      "description": "User identifier",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "user_transaction_analysis.go"],
+        "lines": [22, 59],
+        "symbol": "GetUserTransactionAnalysis"
+      }
+    },
+    {
+      "name": "as_of_date",
+      "data_type": "date",
+      "required": true,
+      "description": "Analysis snapshot date",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "user_transaction_analysis.go"],
+        "lines": [22, 59],
+        "symbol": "GetUserTransactionAnalysis"
+      }
+    },
+    {
+      "name": "period",
+      "data_type": "text",
+      "required": true,
+      "description": "Analysis period",
+      "enum_ref": "user_transaction_analysis.period",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [30, 30],
+        "field_name": "Period"
+      }
+    },
+    {
+      "name": "projected_salary",
+      "data_type": "number",
+      "required": false,
+      "description": "Projected monthly salary from income streams",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [31, 31],
+        "field_name": "ProjectedSalary"
+      }
+    },
+    {
+      "name": "main_financial_institution_account_id",
+      "data_type": "text",
+      "required": false,
+      "description": "Primary account ID for income detection",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [32, 32],
+        "field_name": "MainFinancialInstitutionAccountId"
+      }
+    },
+    {
+      "name": "main_financial_institution_name",
+      "data_type": "text",
+      "required": false,
+      "description": "Name of the primary financial institution",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [33, 33],
+        "field_name": "MainFinancialInstitutionName"
+      }
+    },
+    {
+      "name": "streams",
+      "data_type": "array",
+      "required": false,
+      "description": "Transaction streams for review",
+      "model_ref": "user_transaction_analysis.stream",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [43, 43],
+        "field_name": "Streams"
+      }
+    },
+    {
+      "name": "l3_expense_monthly_sums",
+      "data_type": "object",
+      "required": false,
+      "description": "L3 expense category monthly sums",
+      "model_ref": "user_transaction_analysis.category_monthly_map",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [34, 34],
+        "field_name": "L3ExpenseMonthlySums"
+      }
+    },
+    {
+      "name": "l3_expense_monthly_projections",
+      "data_type": "object",
+      "required": false,
+      "description": "L3 expense category monthly projections",
+      "model_ref": "user_transaction_analysis.category_monthly_map",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [35, 35],
+        "field_name": "L3ExpenseMonthlyProjections"
+      }
+    },
+    {
+      "name": "l3_income_monthly_sums",
+      "data_type": "object",
+      "required": false,
+      "description": "L3 income category monthly sums",
+      "model_ref": "user_transaction_analysis.category_monthly_map",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [36, 36],
+        "field_name": "L3IncomeMonthlySums"
+      }
+    },
+    {
+      "name": "l3_income_monthly_projections",
+      "data_type": "object",
+      "required": false,
+      "description": "L3 income category monthly projections",
+      "model_ref": "user_transaction_analysis.category_monthly_map",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [37, 37],
+        "field_name": "L3IncomeMonthlyProjections"
+      }
+    },
+    {
+      "name": "l3_transfer_monthly_sums",
+      "data_type": "object",
+      "required": false,
+      "description": "L3 transfer category monthly sums",
+      "model_ref": "user_transaction_analysis.category_monthly_map",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [38, 38],
+        "field_name": "L3TransferMonthlySums"
+      }
+    },
+    {
+      "name": "l3_transfer_monthly_projections",
+      "data_type": "object",
+      "required": false,
+      "description": "L3 transfer category monthly projections",
+      "model_ref": "user_transaction_analysis.category_monthly_map",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [39, 39],
+        "field_name": "L3TransferMonthlyProjections"
+      }
+    },
+    {
+      "name": "monthly_living_expenses",
+      "data_type": "number",
+      "required": false,
+      "description": "Calculated monthly living expenses",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [40, 40],
+        "field_name": "MonthlyLivingExpenses"
+      }
+    },
+    {
+      "name": "monthly_housing_expenses",
+      "data_type": "number",
+      "required": false,
+      "description": "Calculated monthly housing expenses",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [41, 41],
+        "field_name": "MonthlyHousingExpenses"
+      }
+    },
+    {
+      "name": "monthly_total_expenses",
+      "data_type": "number",
+      "required": false,
+      "description": "Calculated total monthly expenses",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["model", "user_transaction_analysis.go"],
+        "lines": [42, 42],
+        "field_name": "MonthlyTotalExpenses"
+      }
+    },
+    {
+      "name": "created_at",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Analysis creation timestamp",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "user_transaction_analysis.go"],
+        "lines": [22, 59],
+        "symbol": "GetUserTransactionAnalysis"
+      }
+    },
+    {
+      "name": "updated_at",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Last update timestamp",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "user_transaction_analysis.go"],
+        "lines": [22, 59],
+        "symbol": "GetUserTransactionAnalysis"
+      }
+    }
+  ]
+}

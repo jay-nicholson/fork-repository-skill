@@ -1,0 +1,100 @@
+{
+  "id": "compute_repayment_warning",
+  "name": "Compute Repayment Warning Level",
+  "description": "Transform credit repayment status codes into numeric warning levels. Maps payment status codes (0, 1-6, C, A, R, P, T, X) to warning severity (0=current, 1-6=months overdue, 7=worst).",
+  "steps": [
+    {
+      "id": "get_repayments",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_credit_repayments"
+        }
+      ],
+      "description": "Get filtered repayments for user"
+    },
+    {
+      "id": "map_status_to_warning",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_repayments"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "repayments",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "model_ref": "monthly_credit_update"
+        },
+        "source": {
+          "repo": "creditor",
+          "path": [
+            "credit",
+            "equifax",
+            "util.go"
+          ],
+          "lines": [
+            191,
+            206
+          ],
+          "symbol": "creditWarning"
+        },
+        "description": "For each repayment, maps status code to warning level: 0/C/A/R/P/T → 0 (current/paid), 1-6 → 1-6 (months overdue), X → 7 (worst), unknown → -1"
+      },
+      "description": "Apply warning level transformation to each repayment"
+    }
+  ],
+  "output": {
+    "step": "map_status_to_warning",
+    "description": "Repayments with computed warning levels",
+    "type": "array",
+    "model_ref": "monthly_credit_update"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_credit_repayments"
+    ],
+    "fields": [
+      "credit_repayment.status"
+    ]
+  },
+  "outputs_to": {
+    "models": ["monthly_credit_update"],
+    "fields": [
+      "monthly_credit_update.warning",
+      "monthly_credit_update.status",
+      "monthly_credit_update.detail",
+      "monthly_credit_update.date"
+    ]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountRepaymentHistory",
+      "label": "Repayment History",
+      "format": "text",
+      "description": "24-month dot grid with warning colors (0=green, 1-6=red, 7=worst)"
+    }
+  ],
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "credit",
+      "equifax",
+      "util.go"
+    ],
+    "lines": [
+      161,
+      184
+    ],
+    "symbol": "updates"
+  }
+}

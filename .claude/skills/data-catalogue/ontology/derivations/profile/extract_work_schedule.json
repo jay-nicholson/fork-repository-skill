@@ -1,0 +1,65 @@
+{
+  "id": "extract_work_schedule",
+  "name": "Extract Work Schedule",
+  "description": "Extract work schedule from member employment info. Returns full_time, part_time, casual, etc. Used in Header component.",
+  "steps": [
+    {
+      "id": "get_member",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Get filtered member for user"
+    },
+    {
+      "id": "extract_schedule",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_member"
+        },
+        {
+          "literal": "employment_info.work_schedule"
+        }
+      ],
+      "description": "Extract work_schedule from employment_info"
+    }
+  ],
+  "output": {
+    "step": "extract_schedule",
+    "description": "Work schedule type (full_time, part_time, casual)",
+    "type": "text"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "member.employment_info.work_schedule"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_profile.go"
+    ],
+    "lines": [
+      73,
+      75
+    ],
+    "symbol": "MapUserProfile"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header",
+      "label": "Work Schedule",
+      "format": "text"
+    }
+  ]
+}

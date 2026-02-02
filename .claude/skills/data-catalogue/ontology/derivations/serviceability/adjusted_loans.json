@@ -1,0 +1,44 @@
+{
+  "id": "adjusted_loans",
+  "name": "Adjusted Loan Repayments",
+  "description": "Higher of declared vs detected loan repayments (conservative approach)",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "max",
+      "inputs": [
+        {
+          "derivation": "declared_loans"
+        },
+        {
+          "derivation": "detected_loans"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "declared_loans",
+      "detected_loans"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - loans logic"
+  }
+}

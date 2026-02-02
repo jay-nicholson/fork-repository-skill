@@ -1,0 +1,70 @@
+{
+  "id": "map_account_status",
+  "name": "Map Account Status",
+  "description": "Maps raw account status values to display-friendly status strings: ACTIVE -> Open, TO_BE_CLOSED -> Closed. Note: Go code returns original status for unknown values, but portal treats unmapped as passthrough.",
+  "steps": [
+    {
+      "id": "get_account",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_accounts"
+        }
+      ],
+      "description": "Get user's filtered accounts"
+    },
+    {
+      "id": "get_status",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_account"
+        },
+        {
+          "literal": "status"
+        }
+      ],
+      "description": "Extract status field"
+    },
+    {
+      "id": "map_status",
+      "operation": "map",
+      "inputs": [
+        {
+          "step": "get_status"
+        }
+      ],
+      "mappings": [
+        { "when": "ACTIVE", "then": "Open" },
+        { "when": "TO_BE_CLOSED", "then": "Closed" }
+      ],
+      "default": null,
+      "description": "Map status codes: ACTIVE -> Open, TO_BE_CLOSED -> Closed, default -> null for unmapped values"
+    }
+  ],
+  "output": {
+    "step": "map_status",
+    "description": "Display-friendly account status"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts"],
+    "fields": ["account.status"]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.status"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "label": "Account Status",
+      "format": "text"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [54, 67],
+    "symbol": "mapAccountStatus"
+  }
+}

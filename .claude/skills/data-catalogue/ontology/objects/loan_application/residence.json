@@ -1,0 +1,142 @@
+{
+  "id": "loan_application.residence",
+  "name": "Loan Residence",
+  "description": "Residence address details (used for current and previous)",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [117, 128]
+  },
+  "fields": [
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Type of residence (e.g., owner, renting, boarding)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [118, 118]
+      }
+    },
+    {
+      "name": "start_date",
+      "json_tag": "startDate",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Date residence started (YYYY-MM-DD format)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [119, 119]
+      }
+    },
+    {
+      "name": "unit_number",
+      "json_tag": "unitNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Unit or apartment number",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [120, 120]
+      }
+    },
+    {
+      "name": "street_number",
+      "json_tag": "streetNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Street number",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [121, 121]
+      }
+    },
+    {
+      "name": "street_name",
+      "json_tag": "streetName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Street name",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [122, 122]
+      }
+    },
+    {
+      "name": "street_type",
+      "json_tag": "streetType",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Street type (e.g., Street, Road, Avenue)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [123, 123]
+      }
+    },
+    {
+      "name": "suburb",
+      "json_tag": "suburb",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Suburb or city",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [124, 124]
+      }
+    },
+    {
+      "name": "state",
+      "json_tag": "state",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "State or territory",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [125, 125]
+      }
+    },
+    {
+      "name": "post_code",
+      "json_tag": "postCode",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Postal code",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [126, 126]
+      }
+    },
+    {
+      "name": "country_code",
+      "json_tag": "countryCode",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Country code (ISO format)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [127, 127]
+      }
+    }
+  ]
+}

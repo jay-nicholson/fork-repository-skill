@@ -1,0 +1,109 @@
+{
+  "id": "other_income_stream",
+  "name": "Other Income Stream",
+  "description": "Identify the other (secondary) income stream: the second highest monthly amount credit stream that qualifies as income. Per MapDetected logic, only ONE other income stream is tracked.",
+  "steps": [
+    {
+      "id": "filter_income_streams",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "credit"
+          },
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active"
+          },
+          {
+            "field": "cadence_category",
+            "operator": "neq",
+            "value": "Irregular"
+          },
+          {
+            "field": "category.code",
+            "operator": "starts_with",
+            "value": "income."
+          },
+          {
+            "field": "category.code",
+            "operator": "not_in",
+            "value": [
+              "income.other.health_rebates",
+              "income.other.capital_proceeds",
+              "income.other.cash_deposit",
+              "income.other.insurance_refund",
+              "income.other.purchase_refund",
+              "income.other.transfers_and_reimbursements"
+            ]
+          }
+        ]
+      },
+      "description": "Filter to credit streams that qualify as income per isCalculationComponentIncome"
+    },
+    {
+      "id": "sorted_by_amount",
+      "operation": "sort",
+      "inputs": [
+        {
+          "step": "filter_income_streams"
+        }
+      ],
+      "by": "amount.mean",
+      "order": "desc",
+      "description": "Sort by average amount descending"
+    },
+    {
+      "id": "skip_primary",
+      "operation": "slice",
+      "inputs": [
+        {
+          "step": "sorted_by_amount"
+        }
+      ],
+      "start": 1,
+      "description": "Skip the first (primary) stream"
+    },
+    {
+      "id": "other_stream",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "skip_primary"
+        }
+      ],
+      "description": "Take the second highest as other income stream"
+    }
+  ],
+  "output": {
+    "step": "other_stream",
+    "description": "The second highest income stream, or null if fewer than 2 income streams"
+  },
+  "depends_on": {
+    "derivations": [
+      "aggregate_streams"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      48,
+      89
+    ],
+    "symbol": "MapDetected - otherStream selection"
+  }
+}

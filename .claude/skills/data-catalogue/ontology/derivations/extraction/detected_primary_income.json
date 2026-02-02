@@ -1,0 +1,79 @@
+{
+  "id": "detected_primary_income",
+  "name": "Detected Primary Income",
+  "description": "Calculate monthly amount from the primary income stream identified by primary_income_stream derivation.",
+  "steps": [
+    {
+      "id": "monthly_amount",
+      "operation": "custom",
+      "inputs": [
+        {
+          "derivation": "primary_income_stream"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "stream",
+              "type": "object",
+              "required": false
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly",
+          "nullable": true
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "shared",
+            "queries",
+            "member",
+            "map_detected.go"
+          ],
+          "lines": [
+            48,
+            89
+          ],
+          "symbol": "calculateMonthlyAmount"
+        },
+        "description": "Convert stream amount to monthly: for Weekly multiply mean by 4.33, for Fortnightly multiply by 2.17, for Monthly use mean directly. Returns null if no stream found."
+      }
+    }
+  ],
+  "output": {
+    "step": "monthly_amount",
+    "unit": "AUD_monthly",
+    "description": "Monthly post-tax primary income detected from transaction streams, or null if no qualifying stream found"
+  },
+  "depends_on": {
+    "derivations": [
+      "primary_income_stream"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      48,
+      89
+    ],
+    "symbol": "MapDetected - primaryStream logic"
+  },
+  "notes": {
+    "cadence_multipliers": {
+      "Weekly": 4.33,
+      "Fortnightly": 2.17,
+      "Monthly": 1.0,
+      "Daily": 30.0
+    }
+  }
+}

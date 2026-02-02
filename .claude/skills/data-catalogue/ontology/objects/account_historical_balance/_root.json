@@ -1,0 +1,74 @@
+{
+  "id": "account_historical_balance",
+  "name": "Account Historical Balance",
+  "description": "Daily balance snapshots for bank accounts from OpenBanking. Used to calculate balance metrics like min_balance_90d and count_days_negative_90d.",
+  "source": {
+    "type": "database",
+    "database": "openbanker",
+    "table": "account_historical_balances"
+  },
+  "backend_ref": {
+    "repo": "open-banker",
+    "path": ["db", "postgres", "model", "account_historic_balance.go"],
+    "lines": [92, 99],
+    "symbol": "AccountHistoricalBalance"
+  },
+  "fields": [
+    {
+      "name": "user_id",
+      "json_tag": "user_id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier - used for filtering balances by user",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "model", "account_historic_balance.go"],
+        "lines": [93, 93],
+        "field_name": "UserId"
+      }
+    },
+    {
+      "name": "account_id",
+      "json_tag": "account_id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Account identifier - foreign key to accounts table",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "model", "account_historic_balance.go"],
+        "lines": [94, 94],
+        "field_name": "AccountId"
+      }
+    },
+    {
+      "name": "date",
+      "json_tag": "date",
+      "go_type": "time.Time",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Balance date",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "model", "account_historic_balance.go"],
+        "lines": [95, 95],
+        "field_name": "Date"
+      }
+    },
+    {
+      "name": "balance",
+      "json_tag": "balance",
+      "go_type": "decimal.Decimal",
+      "data_type": "number",
+      "required": true,
+      "description": "Account balance on this date",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "model", "account_historic_balance.go"],
+        "lines": [96, 96],
+        "field_name": "Balance"
+      }
+    }
+  ]
+}

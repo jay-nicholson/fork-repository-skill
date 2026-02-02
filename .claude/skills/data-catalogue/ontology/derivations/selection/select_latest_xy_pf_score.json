@@ -1,0 +1,68 @@
+{
+  "id": "select_latest_xy_pf_score",
+  "name": "Select Latest XYPF Score",
+  "description": "From filtered XYPF scores, get the most recent by month. Query: ... ORDER BY month DESC LIMIT 1",
+  "steps": [
+    {
+      "id": "get_user_scores",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_xy_pf_scores"
+        }
+      ],
+      "description": "Get filtered XYPF scores for user"
+    },
+    {
+      "id": "sort_by_month_desc",
+      "operation": "sort",
+      "inputs": [
+        {
+          "step": "get_user_scores"
+        }
+      ],
+      "by": "month",
+      "order": "desc",
+      "description": "ORDER BY month DESC"
+    },
+    {
+      "id": "take_first",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "sort_by_month_desc"
+        }
+      ],
+      "description": "LIMIT 1"
+    }
+  ],
+  "output": {
+    "step": "take_first"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_xy_pf_scores"
+    ],
+    "fields": [
+      "xy_pf_score.month"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "xy_pf_score.go"
+    ],
+    "symbol": "GetLatest"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header Bar",
+      "field": "score",
+      "label": "XYPF Score",
+      "format": "number"
+    }
+  ],
+  "category": "selection"
+}

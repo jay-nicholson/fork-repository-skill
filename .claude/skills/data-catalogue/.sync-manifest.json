@@ -1,0 +1,40 @@
+{
+  "source_repo": "we-money/brightmatch-data-catalogue",
+  "source_commit": "08f8d425dcbbc2e9057b6aa6a60d1a0a5bdf1e1b",
+  "synced_at": "2026-02-02T15:50:22Z",
+  "synced_by": "sync-data-catalogue.sh",
+  "content": {
+    "models": [
+  "account",
+  "account_historical_balance",
+  "comprehensive_score",
+  "consent",
+  "credit_account",
+  "credit_characteristic",
+  "credit_default",
+  "credit_enquiry",
+  "credit_repayment",
+  "credit_score",
+  "lender_rules",
+  "loan_application",
+  "member",
+  "monthly_credit_update",
+  "payslip",
+  "portal_account",
+  "risk_metrics",
+  "transaction",
+  "user_lender_outcomes",
+  "user_transaction_analysis",
+  "xy_pf_score"
+],
+    "derivation_categories": [
+  "account",
+  "credit",
+  "extraction",
+  "lookup",
+  "profile",
+  "selection",
+  "serviceability"
+]
+  }
+}

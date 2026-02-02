@@ -1,0 +1,154 @@
+{
+  "id": "merge_credit_accounts",
+  "name": "Merge Credit Accounts",
+  "description": "Merges CCR (credit bureau) accounts with Connected (CDR/scraping) accounts by matching last 4 digits of account number. Produces unified credit account cards showing both bureau and live balance data.",
+  "steps": [
+    {
+      "id": "get_ccr_accounts",
+      "operation": "custom",
+      "inputs": [
+        {
+          "derivation": "filter_user_credit_accounts"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "credit_accounts", "type": "array", "required": true }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Open credit/loan accounts from CCR"
+        },
+        "source": {
+          "repo": "brightmatch-admin-portal",
+          "path": ["src", "views", "summary-v2", "credit-accounts", "components", "CreditAccountsList.tsx"],
+          "lines": [19, 24],
+          "symbol": "openCcrAccounts"
+        },
+        "description": "Filter where status === 'Open' AND isCreditAccountCCR(account). isCreditAccountCCR (accountHelpers.ts:22-30) checks type includes 'credit'|'card'|'loan'|'mortgage'"
+      },
+      "description": "Filter CCR accounts to Open status AND credit/loan types via isCreditAccountCCR()"
+    },
+    {
+      "id": "get_connected_accounts",
+      "operation": "custom",
+      "inputs": [
+        {
+          "derivation": "filter_user_accounts"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "accounts", "type": "array", "required": true }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Credit/loan accounts from connected accounts"
+        },
+        "source": {
+          "repo": "brightmatch-admin-portal",
+          "path": ["src", "views", "summary-v2", "credit-accounts", "helpers", "accountHelpers.ts"],
+          "lines": [6, 17],
+          "symbol": "isCreditAccount"
+        },
+        "description": "Filter using isCreditAccount(): type/subType includes 'credit'|'loan'|'mortgage' OR classification === 'liability'"
+      },
+      "description": "Filter connected accounts to credit/loan types using isCreditAccount helper"
+    },
+    {
+      "id": "match_by_last_4",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_ccr_accounts"
+        },
+        {
+          "step": "get_connected_accounts"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "ccr_accounts",
+              "type": "array",
+              "required": true
+            },
+            {
+              "name": "connected_accounts",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Unified accounts with sources array indicating data origin"
+        },
+        "source": {
+          "repo": "brightmatch-admin-portal",
+          "path": ["src", "views", "summary-v2", "credit-accounts", "components", "CreditAccountsList.tsx"],
+          "lines": [34, 96],
+          "symbol": "allCreditAccounts"
+        },
+        "description": "Match CCR accounts to connected accounts by extracting last 4 digits of account number. Each CCR account attempts to find matching connected account. Matched pairs get sources=['ccr','connected'], unmatched CCR gets sources=['ccr'], unmatched connected gets sources=['connected']."
+      },
+      "description": "Match accounts by last 4 digits of account number"
+    }
+  ],
+  "output": {
+    "step": "match_by_last_4",
+    "description": "Unified credit accounts with merged CCR and connected data"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_credit_accounts",
+      "filter_user_accounts"
+    ],
+    "fields": [
+      "credit_account.number",
+      "credit_account.status",
+      "credit_account.amount",
+      "credit_account.provider",
+      "account.number",
+      "account.balance",
+      "account.is_ob",
+      "account.type"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": ["src", "views", "summary-v2", "credit-accounts", "components", "CreditAccountsList.tsx"],
+    "lines": [34, 96],
+    "symbol": "allCreditAccounts"
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountsList",
+      "label": "Merged Credit Accounts",
+      "format": "text",
+      "description": "List of unified credit account cards in Summary V2 left sidebar"
+    },
+    {
+      "component": "CreditAccountCard",
+      "label": "Unified Account Card",
+      "format": "text",
+      "description": "Card showing both CCR (limit, repayments) and connected (balance, interest) data"
+    }
+  ],
+  "notes": {
+    "matching_algorithm": "Extract last 4 digits from account numbers, case-insensitive match",
+    "sort_order": "Merged accounts first (sources.length > 1), then CCR-only, then connected-only",
+    "ccr_fields_used": ["type", "provider", "name", "number", "opened", "amount (limit)", "status", "repayments"],
+    "connected_fields_used": ["type", "subType", "orgName", "name", "number", "balance", "interestRate", "isOb", "balanceHistory"],
+    "frontend_only": true,
+    "implementation_note": "This merging logic is performed in the frontend (React), not the backend API"
+  }
+}

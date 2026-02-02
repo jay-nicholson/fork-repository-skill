@@ -1,0 +1,51 @@
+{
+  "id": "loan_application.partner_income",
+  "name": "Loan Partner Income",
+  "description": "Partner income details",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [153, 157]
+  },
+  "fields": [
+    {
+      "name": "amount",
+      "json_tag": "amount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Partner's income amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [154, 154]
+      }
+    },
+    {
+      "name": "is_pre_tax",
+      "json_tag": "isPreTax",
+      "go_type": "*bool",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether the amount is pre-tax (gross) or post-tax (net)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [155, 155]
+      }
+    },
+    {
+      "name": "frequency",
+      "json_tag": "frequency",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Payment frequency (e.g., weekly, monthly, annually)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [156, 156]
+      }
+    }
+  ]
+}

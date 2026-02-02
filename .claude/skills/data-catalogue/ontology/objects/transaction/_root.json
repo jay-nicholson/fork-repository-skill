@@ -1,0 +1,205 @@
+{
+  "id": "transaction",
+  "name": "Bank Transaction",
+  "description": "Bank transaction from OpenBanking/Yodlee data aggregators. Transactions are fetched from banking APIs and stored in categorizer DB. Used as input for stream aggregation - grouped by AccountID, Direction, Type, MCC, and description similarity ≥0.75 into streams.",
+  "source": {
+    "type": "db:categorizer",
+    "database": "categorizer",
+    "table": "transactions"
+  },
+  "backend_ref": {
+    "repo": "categorizer",
+    "path": ["db", "postgres", "model", "transaction.go"],
+    "lines": [583, 621],
+    "symbol": "Transaction"
+  },
+  "notes": {
+    "data_source": "OpenBanking CDR or Yodlee data aggregator",
+    "stream_grouping": "categorizer/categorizer/analysis/analysis.go:333-432 (buildStreams) - transactions grouped into streams by matching AccountID, Direction, Type, MCC, and description similarity ≥0.75 (Jaccard)"
+  },
+  "fields": [
+    {
+      "name": "id",
+      "json_tag": "id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Transaction identifier from aggregator",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [584, 584],
+        "field_name": "Id"
+      }
+    },
+    {
+      "name": "user_id",
+      "json_tag": "user_id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier - foreign key to users table",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [585, 585],
+        "field_name": "UserId"
+      }
+    },
+    {
+      "name": "account_id",
+      "json_tag": "account_id",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Account identifier - foreign key to accounts table. Used in stream grouping.",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [586, 586],
+        "field_name": "AccountId"
+      }
+    },
+    {
+      "name": "amount",
+      "json_tag": "amount",
+      "go_type": "decimal.Decimal",
+      "data_type": "number",
+      "required": true,
+      "description": "Transaction amount (positive value, direction determined by direction field)",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [591, 591],
+        "field_name": "Amount"
+      }
+    },
+    {
+      "name": "direction",
+      "json_tag": "direction",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Transaction direction: 'credit' (money in) or 'debit' (money out). Used in stream grouping.",
+      "allowed_values": ["credit", "debit"],
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [593, 593],
+        "field_name": "Direction"
+      }
+    },
+    {
+      "name": "description",
+      "json_tag": "description",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Transaction description from bank. Normalized and compared using Jaccard similarity for stream grouping.",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [596, 596],
+        "field_name": "Description"
+      }
+    },
+    {
+      "name": "transacted_at",
+      "json_tag": "transacted_at",
+      "go_type": "time.Time",
+      "data_type": "datetime",
+      "required": true,
+      "description": "When the transaction occurred. Used for cadence calculation in streams.",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [597, 597],
+        "field_name": "TransactedAt"
+      }
+    },
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Transaction type from bank feed. Used in stream grouping.",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [599, 599],
+        "field_name": "Type"
+      }
+    },
+    {
+      "name": "merchant",
+      "json_tag": "merchant",
+      "go_type": "*types.JSONText",
+      "data_type": "object",
+      "required": false,
+      "description": "Merchant information (name, category, MCC) as unstructured JSONB. MCC used in stream grouping.",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [601, 601],
+        "field_name": "Merchant"
+      }
+    },
+    {
+      "name": "category",
+      "json_tag": "category",
+      "go_type": "*types.JSONText",
+      "data_type": "object",
+      "required": false,
+      "description": "Transaction category assigned by categorizer or user override as unstructured JSONB",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [602, 602],
+        "field_name": "Category"
+      }
+    },
+    {
+      "name": "is_ob_transaction",
+      "json_tag": "is_ob_transaction",
+      "go_type": "bool",
+      "data_type": "boolean",
+      "required": true,
+      "description": "Whether transaction is from OpenBanking CDR",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [604, 604],
+        "field_name": "IsObTransaction"
+      }
+    },
+    {
+      "name": "created_at",
+      "json_tag": "created_at",
+      "go_type": "time.Time",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record creation timestamp",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [616, 616],
+        "field_name": "CreatedAt"
+      }
+    },
+    {
+      "name": "updated_at",
+      "json_tag": "updated_at",
+      "go_type": "time.Time",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Record last update timestamp",
+      "backend_ref": {
+        "repo": "categorizer",
+        "path": ["db", "postgres", "model", "transaction.go"],
+        "lines": [617, 617],
+        "field_name": "UpdatedAt"
+      }
+    }
+  ]
+}

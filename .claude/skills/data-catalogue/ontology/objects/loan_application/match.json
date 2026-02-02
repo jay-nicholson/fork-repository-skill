@@ -1,0 +1,65 @@
+{
+  "id": "loan_application.match",
+  "name": "Loan Application Match",
+  "description": "Lender match result indicating eligibility",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [62, 67]
+  },
+  "fields": [
+    {
+      "name": "lender",
+      "json_tag": "lender",
+      "go_type": "lender.Lender",
+      "data_type": "text",
+      "required": true,
+      "description": "Lender identifier",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [63, 63]
+      }
+    },
+    {
+      "name": "is_match",
+      "json_tag": "isMatch",
+      "go_type": "bool",
+      "data_type": "boolean",
+      "required": true,
+      "description": "Whether the applicant matches this lender's criteria",
+      "derivation_ref": "evaluate_lender_eligibility",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [64, 64]
+      }
+    },
+    {
+      "name": "reason",
+      "json_tag": "reason",
+      "go_type": "string",
+      "data_type": "text",
+      "required": true,
+      "description": "Reason for match or rejection",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [65, 65]
+      }
+    },
+    {
+      "name": "confidence_score",
+      "json_tag": "confidenceScore",
+      "go_type": "float64",
+      "data_type": "number",
+      "required": true,
+      "description": "Confidence score for the match (0-1)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [66, 66]
+      }
+    }
+  ]
+}

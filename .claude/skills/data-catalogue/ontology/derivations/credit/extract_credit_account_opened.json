@@ -1,0 +1,43 @@
+{
+  "id": "extract_credit_account_opened",
+  "name": "Extract Credit Account Open Date",
+  "description": "Extract account open date from CCR credit account for display",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_credit_accounts" }],
+      "description": "Get user's CCR credit accounts"
+    },
+    {
+      "id": "extract_field",
+      "operation": "select",
+      "inputs": [
+        { "step": "get_accounts" },
+        { "literal": "opened" }
+      ],
+      "description": "Extract opened field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Date account was opened"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_credit_accounts"],
+    "fields": ["credit_account.opened"]
+  },
+  "ui_outputs": [
+    {
+      "component": "AccountInfo",
+      "label": "Open Date",
+      "format": "date"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": ["src", "views", "summary-v2", "components", "credit-accounts", "CreditAccountCard.tsx"],
+    "lines": [43, 48],
+    "symbol": "openDate"
+  }
+}

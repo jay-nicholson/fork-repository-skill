@@ -1,0 +1,64 @@
+{
+  "id": "loan_application.drivers_license",
+  "name": "Loan Drivers License",
+  "description": "Driver's license details for identity verification",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [103, 107]
+  },
+  "fields": [
+    {
+      "name": "licence_state",
+      "json_tag": "licenceState",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "State/territory that issued the driver's license",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [104, 104]
+      }
+    },
+    {
+      "name": "licence_number",
+      "json_tag": "licenceNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Driver's license number (de-identified)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [105, 105]
+      }
+    },
+    {
+      "name": "card_number",
+      "json_tag": "cardNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Card number on driver's license",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [106, 106]
+      }
+    },
+    {
+      "name": "expiry_date",
+      "json_tag": "expiryDate",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "License expiry date",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [113, 113]
+      }
+    }
+  ]
+}

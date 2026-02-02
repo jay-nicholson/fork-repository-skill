@@ -1,0 +1,90 @@
+{
+  "id": "loan_application.expenses",
+  "name": "Loan Expenses",
+  "description": "Declared housing and living expenses",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [160, 166]
+  },
+  "fields": [
+    {
+      "name": "housing_type",
+      "json_tag": "housingType",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Type of housing expense (e.g., rent, mortgage, board)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [161, 161]
+      }
+    },
+    {
+      "name": "housing_amount",
+      "json_tag": "housingAmount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Housing expense amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [162, 162]
+      }
+    },
+    {
+      "name": "housing_frequency",
+      "json_tag": "housingFrequency",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Frequency of housing expense (e.g., weekly, monthly)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [163, 163]
+      }
+    },
+    {
+      "name": "living_amount",
+      "json_tag": "livingAmount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "General living expenses amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [164, 164]
+      }
+    },
+    {
+      "name": "living_frequency",
+      "json_tag": "livingFrequency",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Frequency of living expenses (e.g., weekly, monthly)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [165, 165]
+      }
+    },
+    {
+      "name": "monthly_loan_repayments",
+      "json_tag": "monthlyLoanRepayments",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Total monthly loan repayments declared by the applicant",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [166, 166]
+      }
+    }
+  ]
+}

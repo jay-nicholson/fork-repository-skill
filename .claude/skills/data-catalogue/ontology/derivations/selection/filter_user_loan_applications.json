@@ -1,0 +1,55 @@
+{
+  "id": "filter_user_loan_applications",
+  "name": "Filter User Loan Applications",
+  "description": "Filter loan applications by user_id to get all applications for the current user. Depends on filter_user_member to ensure user exists and is not deleted.",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ]
+    },
+    {
+      "id": "filter_by_user",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "loan_application"
+        }
+      ],
+      "predicate": {
+        "field": "user_id",
+        "operator": "eq",
+        "value": ":user_id"
+      }
+    }
+  ],
+  "output": {
+    "step": "filter_by_user"
+  },
+  "depends_on": {
+    "models": [
+      "loan_application"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "adapters",
+      "loanapplication",
+      "readmodel.go"
+    ],
+    "lines": [
+      1,
+      50
+    ],
+    "symbol": "LoanApplication readmodel - filtered by user_id"
+  }
+}

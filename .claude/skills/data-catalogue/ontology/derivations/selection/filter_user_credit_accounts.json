@@ -1,0 +1,46 @@
+{
+  "id": "filter_user_credit_accounts",
+  "name": "Filter User Credit Accounts",
+  "description": "Filter credit_accounts by user uid. Returns all CCR credit accounts for the user.",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_member" }],
+      "description": "Verify user exists via filter_user_member"
+    },
+    {
+      "id": "filter_by_user",
+      "operation": "filter",
+      "inputs": [{ "model": "credit_account" }],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "WHERE uid = :user_id"
+    }
+  ],
+  "output": {
+    "step": "filter_by_user",
+    "description": "All credit accounts for this user"
+  },
+  "depends_on": {
+    "models": ["credit_account"],
+    "derivations": ["filter_user_member"],
+    "fields": ["credit_account.uid"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "label": "CCR Account Data",
+      "format": "text"
+    }
+  ],
+  "source": {
+    "repo": "creditor",
+    "path": ["storage", "db", "account.go"],
+    "lines": [70, 77],
+    "symbol": "GetAll"
+  }
+}

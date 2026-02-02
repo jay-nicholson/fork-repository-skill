@@ -1,0 +1,46 @@
+{
+  "id": "filter_user_accounts",
+  "name": "Filter User Accounts",
+  "description": "Filter accounts by user_id. Depends on filter_user_member to ensure user exists and is not deleted.",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists and is not deleted"
+    },
+    {
+      "id": "filter_by_user",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "account"
+        }
+      ],
+      "predicate": {
+        "field": "user_id",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "Filter accounts for this user"
+    }
+  ],
+  "output": {
+    "step": "filter_by_user",
+    "description": "All accounts belonging to this user"
+  },
+  "depends_on": {
+    "models": ["account"],
+    "derivations": ["filter_user_member"]
+  },
+  "source": {
+    "repo": "categorizer",
+    "path": ["db", "postgres", "accounts.go"],
+    "lines": [11, 32],
+    "symbol": "GetAccounts"
+  }
+}

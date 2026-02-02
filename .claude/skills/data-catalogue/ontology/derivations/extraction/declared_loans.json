@@ -1,0 +1,43 @@
+{
+  "id": "declared_loans",
+  "name": "Declared Loans",
+  "description": "Extract monthly loan repayments from loan application (already monthly)",
+  "steps": [
+    {
+      "id": "monthly_repayments",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "expenses.monthly_loan_repayments"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "monthly_repayments",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_declared.go"
+    ],
+    "lines": [
+      34,
+      36
+    ],
+    "symbol": "MapDeclared - MonthlyLoanRepayments"
+  }
+}

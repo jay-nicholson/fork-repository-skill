@@ -1,0 +1,71 @@
+{
+  "id": "compute_credit_utilization",
+  "name": "Compute Credit Utilization",
+  "description": "Calculate credit utilization percentage: (|CDR balance| / CCR limit) * 100. Only computed for CREDIT CARD accounts with both CCR limit and connected balance available.",
+  "steps": [
+    {
+      "id": "get_merged_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "merge_credit_accounts" }],
+      "description": "Get merged CCR+Connected accounts"
+    },
+    {
+      "id": "compute",
+      "operation": "custom",
+      "inputs": [{ "step": "get_merged_accounts" }],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "merged_accounts", "type": "array", "required": true }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Merged accounts with utilization percentage added"
+        },
+        "source": {
+          "repo": "brightmatch-admin-portal",
+          "path": ["src", "views", "summary-v2", "credit-accounts", "components", "CreditAccountMetricsBar.tsx"],
+          "lines": [25, 31],
+          "symbol": "utilization"
+        },
+        "description": "For accounts with sources=['ccr','connected']: Math.round((Math.abs(connectedAccount.balance) / ccrAccount.amount) * 100). Returns null for single-source accounts or if limit is 0."
+      },
+      "description": "Compute utilization for merged accounts with both CCR and connected data"
+    }
+  ],
+  "output": {
+    "step": "compute",
+    "description": "Credit utilization percentage per merged account"
+  },
+  "depends_on": {
+    "derivations": ["merge_credit_accounts"],
+    "fields": ["account.balance", "credit_account.amount"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountMetricsBar",
+      "label": "Utilization %",
+      "format": "percentage",
+      "description": "Progress bar showing balance vs limit, color-coded by utilization level"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": ["src", "views", "summary-v2", "credit-accounts", "components", "CreditAccountMetricsBar.tsx"],
+    "lines": [25, 31],
+    "symbol": "utilization"
+  },
+  "notes": {
+    "formula": "Math.round((Math.abs(balance) / limit) * 100)",
+    "credit_card_only": true,
+    "restriction": "Utilization only calculated for credit card accounts via isCreditCard() check. Returns null for loans, mortgages, etc.",
+    "color_thresholds": {
+      "green": "< 30%",
+      "amber": "30-70%",
+      "red": "> 70%"
+    },
+    "requires_merged": "Only displayed for credit card accounts with both CCR (limit) and connected (balance) data"
+  }
+}

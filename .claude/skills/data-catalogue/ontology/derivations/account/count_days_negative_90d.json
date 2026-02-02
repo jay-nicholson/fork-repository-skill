@@ -1,0 +1,89 @@
+{
+  "id": "count_days_negative_90d",
+  "name": "Count Days Negative (90 Days)",
+  "description": "Counts the number of days with negative balance in the last 90 days from balance history",
+  "steps": [
+    {
+      "id": "get_balance_history",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_account_balances"
+        }
+      ],
+      "description": "Get user's historical balance records"
+    },
+    {
+      "id": "filter_recent",
+      "operation": "filter",
+      "inputs": [
+        {
+          "step": "get_balance_history"
+        }
+      ],
+      "predicate": {
+        "field": "date",
+        "operator": "gte",
+        "value": { "relative": -90, "unit": "d" }
+      },
+      "description": "Filter to last 90 days"
+    },
+    {
+      "id": "filter_negative",
+      "operation": "filter",
+      "inputs": [
+        {
+          "step": "filter_recent"
+        }
+      ],
+      "predicate": {
+        "field": "balance",
+        "operator": "lt",
+        "value": 0
+      },
+      "description": "Filter to negative balances only"
+    },
+    {
+      "id": "count_days",
+      "operation": "aggregate",
+      "inputs": [
+        {
+          "step": "filter_negative"
+        }
+      ],
+      "aggregator": {
+        "type": "count"
+      },
+      "description": "Count number of days with negative balance"
+    }
+  ],
+  "output": {
+    "step": "count_days",
+    "type": "number",
+    "description": "Number of days with negative balance"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_account_balances"],
+    "fields": [
+      "account_historical_balance.date",
+      "account_historical_balance.balance"
+    ]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.days_negative_90d"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "label": "Days Negative (90d)",
+      "format": "count"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [96, 125],
+    "symbol": "calculateBalanceMetrics"
+  }
+}

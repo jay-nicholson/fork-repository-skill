@@ -1,0 +1,21 @@
+{
+  "id": "loan_application.liabilities",
+  "name": "Liabilities",
+  "description": "Liabilities including credit cards and existing loans",
+  "fields": [
+    {
+      "name": "credit_cards",
+      "data_type": "array",
+      "required": false,
+      "description": "Credit card details",
+      "model_ref": "loan_application.credit_card"
+    },
+    {
+      "name": "existing_loans",
+      "data_type": "array",
+      "required": false,
+      "description": "Existing loan details",
+      "model_ref": "loan_application.existing_loan"
+    }
+  ]
+}

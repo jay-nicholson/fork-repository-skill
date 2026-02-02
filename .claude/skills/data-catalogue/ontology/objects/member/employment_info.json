@@ -1,0 +1,73 @@
+{
+  "id": "member.employment_info",
+  "name": "Employment Info",
+  "description": "User's employment information from onboarding. Fields stored directly on users table.",
+  "backend_ref": {
+    "repo": "usermanager",
+    "path": ["user", "user.go"],
+    "lines": [358, 363],
+    "struct_name": "EmploymentInfo"
+  },
+  "fields": [
+    {
+      "name": "work_field",
+      "json_tag": "workField",
+      "go_type": "*string",
+      "sql_column": "workField",
+      "data_type": "text",
+      "required": false,
+      "description": "Industry or field of work (e.g., 'healthcare', 'technology', 'retail')",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [360, 360],
+        "field_name": "WorkField"
+      }
+    },
+    {
+      "name": "work_schedule",
+      "json_tag": "workSchedule",
+      "go_type": "*string",
+      "sql_column": "workSchedule",
+      "data_type": "text",
+      "required": false,
+      "description": "Work schedule type (e.g., 'full_time', 'part_time', 'casual')",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [359, 359],
+        "field_name": "WorkSchedule"
+      }
+    },
+    {
+      "name": "primary_income",
+      "json_tag": "primaryIncome",
+      "go_type": "*int",
+      "sql_column": "primaryIncome",
+      "data_type": "number",
+      "required": false,
+      "description": "Primary income amount (from onboarding)",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [361, 361],
+        "field_name": "PrimaryIncome"
+      }
+    },
+    {
+      "name": "secondary_income",
+      "json_tag": "secondaryIncome",
+      "go_type": "*int",
+      "sql_column": "secondaryIncome",
+      "data_type": "number",
+      "required": false,
+      "description": "Secondary income amount (from onboarding)",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [362, 362],
+        "field_name": "SecondaryIncome"
+      }
+    }
+  ]
+}

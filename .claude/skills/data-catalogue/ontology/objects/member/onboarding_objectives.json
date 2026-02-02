@@ -1,0 +1,46 @@
+{
+  "id": "member.onboarding_objectives",
+  "name": "Onboarding Objectives",
+  "description": "User's financial goals and objectives captured during onboarding. Stored as type/values pairs in user_onboarding_objectives table.",
+  "source": {
+    "type": "database",
+    "database": "usermanager",
+    "table": "user_onboarding_objectives"
+  },
+  "backend_ref": {
+    "repo": "usermanager",
+    "path": ["user", "user.go"],
+    "lines": [425, 428],
+    "struct_name": "OnboardingObjectives"
+  },
+  "fields": [
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "OnboardingObjectiveType",
+      "data_type": "text",
+      "required": true,
+      "description": "Type of objective: goals, assets, financialProducts, or attribution",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [426, 426],
+        "field_name": "Type"
+      }
+    },
+    {
+      "name": "values",
+      "json_tag": "values",
+      "go_type": "[]string",
+      "data_type": "array",
+      "required": true,
+      "description": "Array of objective values for this type",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [427, 427],
+        "field_name": "Values"
+      }
+    }
+  ]
+}

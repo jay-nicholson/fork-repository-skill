@@ -1,0 +1,17 @@
+{
+  "id": "lender_rules.residence",
+  "name": "Residence Rules",
+  "description": "Residence type eligibility checks",
+  "phase": "declared",
+  "deterministic": true,
+  "derivation_ref": "evaluate_residence_rules",
+  "lenders_with_rules": ["plenti"],
+  "fields": [
+    {
+      "name": "residence_type",
+      "data_type": "text",
+      "required": true,
+      "description": "Type of residence (owner, renting, boarding, etc.)"
+    }
+  ]
+}

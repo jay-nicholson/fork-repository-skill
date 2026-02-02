@@ -1,0 +1,45 @@
+{
+  "id": "count_flagged_characteristics",
+  "name": "Count Flagged Credit Characteristics",
+  "description": "Count characteristics flagged as adverse credit history for RiskFlagsBar display",
+  "steps": [
+    {
+      "id": "get_flagged",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "compute_characteristic_is_flagged"
+        }
+      ]
+    },
+    {
+      "id": "count_flagged",
+      "operation": "aggregate",
+      "inputs": [
+        {
+          "step": "get_flagged"
+        }
+      ],
+      "aggregator": {
+        "type": "count"
+      }
+    }
+  ],
+  "output": {
+    "step": "count_flagged",
+    "type": "number"
+  },
+  "depends_on": {
+    "derivations": [
+      "compute_characteristic_is_flagged"
+    ]
+  },
+  "terminal": true,
+  "ui_outputs": [
+    {
+      "component": "RiskFlagsBar",
+      "label": "Flagged Characteristics",
+      "format": "count"
+    }
+  ]
+}

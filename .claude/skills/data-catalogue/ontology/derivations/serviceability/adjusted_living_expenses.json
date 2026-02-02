@@ -1,0 +1,48 @@
+{
+  "id": "adjusted_living_expenses",
+  "name": "Adjusted Living Expenses",
+  "description": "Highest of declared, detected, or HEM benchmark living expenses (conservative approach)",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "max",
+      "inputs": [
+        {
+          "derivation": "declared_living_expenses"
+        },
+        {
+          "derivation": "detected_living_expenses"
+        },
+        {
+          "derivation": "lookup_hem_benchmark"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "declared_living_expenses",
+      "detected_living_expenses",
+      "lookup_hem_benchmark"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - living expenses logic"
+  }
+}

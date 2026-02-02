@@ -1,0 +1,44 @@
+{
+  "id": "adjusted_other_income",
+  "name": "Adjusted Other Income",
+  "description": "Lower of declared vs detected other income (conservative approach)",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "min",
+      "inputs": [
+        {
+          "derivation": "declared_other_income"
+        },
+        {
+          "derivation": "detected_other_income"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "declared_other_income",
+      "detected_other_income"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - other income logic"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "adjusted_housing",
+  "name": "Adjusted Housing Expenses",
+  "description": "Highest of declared, detected, or floor housing expenses (conservative approach)",
+  "steps": [
+    {
+      "id": "result",
+      "operation": "max",
+      "inputs": [
+        {
+          "derivation": "declared_housing_expenses"
+        },
+        {
+          "derivation": "detected_housing_expenses"
+        },
+        {
+          "derivation": "lookup_housing_floor"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "declared_housing_expenses",
+      "detected_housing_expenses",
+      "lookup_housing_floor"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "calculate_net_capacity.go"
+    ],
+    "lines": [
+      46,
+      158
+    ],
+    "symbol": "CalculateNetCapacity - housing logic"
+  }
+}

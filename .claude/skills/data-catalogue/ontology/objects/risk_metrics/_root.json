@@ -1,0 +1,42 @@
+{
+  "id": "risk_metrics",
+  "name": "Risk Metrics",
+  "description": "Standard risk metrics output structure used for behavioral risk indicators (ATM withdrawals, gambling, SACC loans). Computed from transaction stream analysis over a 3-month window.",
+  "source": {
+    "type": "derived",
+    "derived_from": ["user_transaction_analysis.stream"]
+  },
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "queries", "member", "map_risk_analysis.go"],
+    "lines": [101, 148],
+    "symbol": "MonthlyRiskSummary"
+  },
+  "fields": [
+    {
+      "name": "total_count",
+      "json_tag": "totalCount",
+      "go_type": "int",
+      "data_type": "number",
+      "required": true,
+      "description": "Total number of transactions matching the risk category in the analysis window (last 3 months)"
+    },
+    {
+      "name": "monthly_amount",
+      "json_tag": "monthlyAmount",
+      "go_type": "float64",
+      "data_type": "number",
+      "required": true,
+      "description": "Average monthly amount spent on this category (sum of amounts / 3 months)",
+      "unit": "AUD_monthly"
+    },
+    {
+      "name": "monthly_percentage_of_total_debits",
+      "json_tag": "monthlyPercentageOfTotalDebits",
+      "go_type": "float64",
+      "data_type": "number",
+      "required": true,
+      "description": "Monthly amount as a percentage of total monthly debit transactions (0-100)"
+    }
+  ]
+}

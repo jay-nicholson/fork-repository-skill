@@ -2,6 +2,16 @@
 
 You are operating within a **production control environment** for the WeMoney engineering organization.
 
+## Running /prime
+
+**Run this command first when:**
+- Starting a new session
+- Resuming work after accepting a plan
+- Context has been cleared or interrupted
+- You need to verify current orchestrator state
+
+This ensures you have the correct context loaded, especially when Claude Code hooks or context switches may have affected your working memory.
+
 ## What This Is
 
 This is NOT a hobby project. This is the **harness layer** between:
@@ -61,11 +71,28 @@ ORCHESTRATOR_STATUS=local  # Not yet promoted to we-money org
 
 ## Workflow
 
+### First Step: Run /prime
+Always start here when resuming work. This loads:
+- Orchestrator memory and service inventory
+- Current permission model
+- Architecture and context requirements
+- Key services and responsibilities
+
+### Then: Continue with
 1. Read CLAUDE.md for current context
 2. Check git status and recent commits
-3. Understand the task's permission level
-4. Execute with appropriate oversight
-5. Commit and push to preserve state
+3. Review the plan or task description
+4. Understand the task's permission level
+5. Execute with appropriate oversight
+6. Commit and push to preserve state
+
+### Context Stability
+Claude Code may clear context between operations. If you notice:
+- Unexpected context loss
+- Confirmation prompts not appearing
+- Permission boundaries unclear
+
+Run `/prime` again to reload the orchestrator context.
 
 ## Do NOT
 

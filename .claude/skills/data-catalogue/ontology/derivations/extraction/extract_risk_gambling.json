@@ -1,0 +1,94 @@
+{
+  "id": "extract_risk_gambling",
+  "name": "Extract Gambling Risk",
+  "description": "Extract gambling activity risk metrics from transaction streams. Filters streams by category code 'expense.entertainment.lottery_gambling', counts transactions in last 3 months, and computes monthly percentage of total debits.",
+  "steps": [
+    {
+      "id": "filter_gambling_streams",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "field": "category.code",
+        "operator": "eq",
+        "value": "expense.entertainment.lottery_gambling"
+      },
+      "description": "Filter streams with category code = expense.entertainment.lottery_gambling"
+    },
+    {
+      "id": "compute_risk_metrics",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "filter_gambling_streams"
+        },
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "gambling_streams",
+              "type": "array",
+              "required": true
+            },
+            {
+              "name": "all_streams",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "object",
+          "model_ref": "risk_metrics"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "src",
+            "shared",
+            "queries",
+            "member",
+            "map_risk_analysis.go"
+          ],
+          "lines": [
+            101,
+            148
+          ],
+          "symbol": "MapMonthlyRiskSummaryFromIndex"
+        },
+        "description": "For each matching stream: count transactions in last 3 months, sum amounts, divide by 3 for monthly average, calculate percentage against total monthly debits from all debit streams"
+      },
+      "description": "Compute totalCount, monthlyAmount, monthlyPercentageOfTotalDebits"
+    }
+  ],
+  "output": {
+    "step": "compute_risk_metrics",
+    "type": "object"
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_risk_analysis.go"
+    ],
+    "symbol": "MapRiskAnalysis"
+  },
+  "ui_outputs": [
+    {
+      "component": "RiskFlagsBar",
+      "field": "monthly_percentage_of_total_debits",
+      "label": "Gambling % of Monthly",
+      "format": "number"
+    }
+  ]
+}

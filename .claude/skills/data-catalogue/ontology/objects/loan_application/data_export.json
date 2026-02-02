@@ -1,0 +1,38 @@
+{
+  "id": "loan_application.data_export",
+  "name": "Loan Data Export",
+  "description": "Information about exported application data",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [189, 192]
+  },
+  "fields": [
+    {
+      "name": "consented_terms",
+      "json_tag": "consentedTerms",
+      "go_type": "[]string",
+      "data_type": "array",
+      "required": false,
+      "description": "Terms user consented to for data export",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [190, 190]
+      }
+    },
+    {
+      "name": "exported_account_ids",
+      "json_tag": "exportedAccountIds",
+      "go_type": "[]string",
+      "data_type": "array",
+      "required": false,
+      "description": "Account IDs that were exported",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [191, 191]
+      }
+    }
+  ]
+}

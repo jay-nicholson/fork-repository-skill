@@ -1,0 +1,49 @@
+{
+  "id": "select_latest_loan_application",
+  "name": "Select Latest Loan Application",
+  "description": "Select the most recently submitted loan application for the user",
+  "steps": [
+    {
+      "id": "sorted",
+      "operation": "sort",
+      "inputs": [
+        {
+          "derivation": "filter_user_loan_applications"
+        }
+      ],
+      "by": "submitted_at",
+      "order": "desc"
+    },
+    {
+      "id": "latest",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "sorted"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "latest"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_loan_applications"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "loan_application.go"
+    ],
+    "lines": [
+      1,
+      30
+    ],
+    "symbol": "GetLatestLoanApplication"
+  }
+}

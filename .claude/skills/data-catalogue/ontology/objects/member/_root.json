@@ -1,0 +1,383 @@
+{
+  "id": "member",
+  "name": "Member",
+  "description": "User/member profile from UserManager database. Core user identity and profile information.",
+  "source": {
+    "type": "database",
+    "database": "usermanager",
+    "table": "users"
+  },
+  "backend_ref": {
+    "repo": "usermanager",
+    "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+    "lines": [2, 18]
+  },
+  "fields": [
+    {
+      "name": "uid",
+      "json_tag": "uid",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier - primary key",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [4, 4],
+        "field_name": "uid"
+      }
+    },
+    {
+      "name": "email",
+      "json_tag": "email",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "User email address",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [5, 5],
+        "field_name": "email"
+      }
+    },
+    {
+      "name": "first_name",
+      "json_tag": "firstName",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "User first name",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [6, 6],
+        "field_name": "first_name"
+      }
+    },
+    {
+      "name": "middle_name",
+      "json_tag": "middleName",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "User middle name",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [7, 7],
+        "field_name": "middle_name"
+      }
+    },
+    {
+      "name": "family_name",
+      "json_tag": "familyName",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "User family/last name",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [8, 8],
+        "field_name": "family_name"
+      }
+    },
+    {
+      "name": "dob",
+      "json_tag": "dob",
+      "sql_type": "DATE",
+      "data_type": "date",
+      "required": false,
+      "description": "Date of birth",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [9, 9],
+        "field_name": "dob"
+      }
+    },
+    {
+      "name": "phone",
+      "json_tag": "phone",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Phone number",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [10, 10],
+        "field_name": "phone"
+      }
+    },
+    {
+      "name": "member_since",
+      "json_tag": "memberSince",
+      "sql_type": "DATE",
+      "data_type": "date",
+      "required": false,
+      "description": "Member since date",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [13, 13],
+        "field_name": "member_since"
+      }
+    },
+    {
+      "name": "member_number",
+      "json_tag": "memberNumber",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Membership number",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [14, 14],
+        "field_name": "member_number"
+      }
+    },
+    {
+      "name": "member_image",
+      "json_tag": "memberImage",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Member profile image URL",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [15, 15],
+        "field_name": "member_image"
+      }
+    },
+    {
+      "name": "member_type",
+      "json_tag": "memberType",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Member type/tier",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000001_users.up.sql"],
+        "lines": [16, 16],
+        "field_name": "member_type"
+      }
+    },
+    {
+      "name": "contacts_visibility",
+      "json_tag": "contactsVisibility",
+      "sql_type": "BOOLEAN",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether user contacts are visible",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [806, 806],
+        "field_name": "contacts_visibility"
+      }
+    },
+    {
+      "name": "ads_enabled_override",
+      "json_tag": "adsEnabledOverride",
+      "sql_type": "BOOLEAN",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Override for ads enabled flag",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [807, 807],
+        "field_name": "ads_enabled_override"
+      }
+    },
+    {
+      "name": "pro_alerts_enabled",
+      "json_tag": "proAlertsEnabled",
+      "sql_type": "BOOLEAN",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether pro alerts are enabled",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [808, 808],
+        "field_name": "pro_alerts_enabled"
+      }
+    },
+    {
+      "name": "stripe_customer_id",
+      "json_tag": "stripeCustomerId",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Stripe customer ID for payments",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [810, 810],
+        "field_name": "stripe_customer_id"
+      }
+    },
+    {
+      "name": "primaryincome",
+      "json_tag": "primaryincome",
+      "sql_type": "INTEGER",
+      "data_type": "number",
+      "required": false,
+      "description": "Primary income amount",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [811, 811],
+        "field_name": "primaryincome"
+      }
+    },
+    {
+      "name": "secondaryincome",
+      "json_tag": "secondaryincome",
+      "sql_type": "INTEGER",
+      "data_type": "number",
+      "required": false,
+      "description": "Secondary income amount",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [812, 812],
+        "field_name": "secondaryincome"
+      }
+    },
+    {
+      "name": "relationship_status",
+      "json_tag": "relationshipStatus",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Relationship status",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [813, 813],
+        "field_name": "relationship_status"
+      }
+    },
+    {
+      "name": "number_of_dependants",
+      "json_tag": "numberOfDependants",
+      "sql_type": "INTEGER",
+      "data_type": "number",
+      "required": false,
+      "description": "Number of dependants",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [814, 814],
+        "field_name": "number_of_dependants"
+      }
+    },
+    {
+      "name": "user_fobm",
+      "json_tag": "userFobm",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": false,
+      "description": "First-time open banking moment timestamp",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [815, 815],
+        "field_name": "user_fobm"
+      }
+    },
+    {
+      "name": "work_field",
+      "json_tag": "workField",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Industry or field of work",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [1038, 1038],
+        "field_name": "workField"
+      }
+    },
+    {
+      "name": "work_schedule",
+      "json_tag": "workSchedule",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": false,
+      "description": "Work schedule type (full_time, part_time, casual)",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "user.go"],
+        "lines": [1038, 1038],
+        "field_name": "workSchedule"
+      }
+    },
+    {
+      "name": "onboarding_objectives",
+      "json_tag": "onboardingObjectives",
+      "go_type": "[]OnboardingObjectives",
+      "data_type": "array",
+      "required": false,
+      "description": "User's financial goals and objectives from onboarding (stored in user_onboarding_objectives table)",
+      "model_ref": "member.onboarding_objectives",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [133, 133],
+        "field_name": "OnboardingObjectives"
+      }
+    },
+    {
+      "name": "employment_info",
+      "json_tag": "employmentInfo",
+      "go_type": "*EmploymentInfo",
+      "data_type": "object",
+      "required": false,
+      "description": "User's employment information from onboarding",
+      "model_ref": "member.employment_info",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["user", "user.go"],
+        "lines": [134, 134],
+        "field_name": "EmploymentInfo"
+      }
+    },
+    {
+      "name": "is_deleted",
+      "json_tag": "isDeleted",
+      "sql_type": "BOOLEAN",
+      "data_type": "boolean",
+      "required": true,
+      "description": "Soft delete flag - true if user has been deleted",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000041_users.up.sql"],
+        "lines": [3, 3],
+        "field_name": "is_deleted"
+      }
+    },
+    {
+      "name": "deleted_on",
+      "json_tag": "deletedOn",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Timestamp when user was deleted (null if not deleted)",
+      "backend_ref": {
+        "repo": "usermanager",
+        "path": ["storage", "db", "migrations", "000041_users.up.sql"],
+        "lines": [4, 4],
+        "field_name": "deleted_on"
+      }
+    }
+  ]
+}

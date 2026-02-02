@@ -1,0 +1,60 @@
+{
+  "id": "filter_user_credit_characteristics",
+  "name": "Filter User Credit Characteristics",
+  "description": "Filter credit_report_characteristics by uid. Query: SELECT ... FROM credit_report_characteristics WHERE uid = $1",
+  "steps": [
+    {
+      "id": "verify_user",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Verify user exists via filter_user_member"
+    },
+    {
+      "id": "filter_by_uid",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "credit_characteristic"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      },
+      "description": "WHERE uid = :user_id"
+    }
+  ],
+  "output": {
+    "step": "filter_by_uid",
+    "description": "All credit_characteristic records for user"
+  },
+  "depends_on": {
+    "models": [
+      "credit_characteristic"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "credit_characteristic.uid"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "characteristics.go"
+    ],
+    "lines": [
+      1664,
+      1665
+    ],
+    "symbol": "credit_report_characteristics WHERE uid"
+  }
+}

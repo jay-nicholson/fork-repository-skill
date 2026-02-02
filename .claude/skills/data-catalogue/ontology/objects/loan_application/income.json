@@ -1,0 +1,31 @@
+{
+  "id": "loan_application.income",
+  "name": "Income",
+  "description": "Income details including amount, frequency, and tax status",
+  "fields": [
+    {
+      "name": "type",
+      "data_type": "text",
+      "required": false,
+      "description": "Type of income"
+    },
+    {
+      "name": "amount",
+      "data_type": "number",
+      "required": false,
+      "description": "Income amount"
+    },
+    {
+      "name": "is_pre_tax",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether the income amount is before tax"
+    },
+    {
+      "name": "frequency",
+      "data_type": "text",
+      "required": false,
+      "description": "How often income is received"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "id": "lookup_housing_floor",
+  "name": "Housing Floor Lookup",
+  "description": "Calculate minimum housing expense floor based on income, residence type, marital status, and dependents",
+  "steps": [
+    {
+      "id": "residence_type",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "current_residence.type"
+        }
+      ]
+    },
+    {
+      "id": "marital_status",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "applicant.marital_status"
+        }
+      ]
+    },
+    {
+      "id": "dependents",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "applicant.number_of_dependents"
+        }
+      ]
+    },
+    {
+      "id": "income",
+      "operation": "sum",
+      "inputs": [
+        {
+          "derivation": "declared_primary_income"
+        },
+        {
+          "derivation": "declared_other_income"
+        }
+      ]
+    },
+    {
+      "id": "floor",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "income"
+        },
+        {
+          "step": "residence_type"
+        },
+        {
+          "step": "marital_status"
+        },
+        {
+          "step": "dependents"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "income",
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "residence_type",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "marital_status",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "dependents",
+              "type": "number",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "src",
+            "shared",
+            "queries",
+            "member",
+            "map_housing_floor.go"
+          ],
+          "lines": [
+            23,
+            50
+          ],
+          "symbol": "MapHousingFloor"
+        },
+        "description": "HOUSING_FLOOR_TABLE[income][residence_type][is_single][has_dependents] -> monthly floor. Requires: monthly_post_tax_income, residence_type, marital_status, number_of_dependents"
+      }
+    }
+  ],
+  "output": {
+    "step": "floor",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application",
+      "declared_primary_income",
+      "declared_other_income"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_housing_floor.go"
+    ],
+    "lines": [
+      23,
+      50
+    ],
+    "symbol": "MapHousingFloor"
+  }
+}

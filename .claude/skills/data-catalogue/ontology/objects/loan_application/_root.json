@@ -1,0 +1,357 @@
+{
+  "id": "loan_application",
+  "name": "Loan Application",
+  "description": "Aggregated read model projected from loan_application events",
+  "source": {
+    "type": "event_sourced_aggregate",
+    "event_model": "loan_application_event",
+    "projection": "shared/adapters/loanapplication/readmodel.go"
+  },
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [30, 58]
+  },
+  "fields": [
+    {
+      "name": "id",
+      "json_tag": "id",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Unique loan application ID",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [31, 31]
+      }
+    },
+    {
+      "name": "user_id",
+      "json_tag": "userId",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "User ID who created the application",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [32, 32]
+      }
+    },
+    {
+      "name": "status",
+      "json_tag": "status",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Current status of the application",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [33, 33]
+      }
+    },
+    {
+      "name": "created_at",
+      "json_tag": "createdAt",
+      "go_type": "*time.Time",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Timestamp when the application was created",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [34, 34]
+      }
+    },
+    {
+      "name": "loan_amount",
+      "json_tag": "amount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Requested loan amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [35, 35]
+      }
+    },
+    {
+      "name": "loan_term_in_months",
+      "json_tag": "termInMonths",
+      "go_type": "*int",
+      "data_type": "number",
+      "required": false,
+      "description": "Requested loan term in months",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [36, 36]
+      }
+    },
+    {
+      "name": "loan_purpose",
+      "json_tag": "purpose",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Purpose of the loan",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [37, 37]
+      }
+    },
+    {
+      "name": "completed_at",
+      "json_tag": "completedAt",
+      "go_type": "*time.Time",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Timestamp when the application was completed",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [38, 38]
+      }
+    },
+    {
+      "name": "submitted_at",
+      "json_tag": "submittedAt",
+      "go_type": "*time.Time",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Timestamp when the application was submitted",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [39, 39]
+      }
+    },
+    {
+      "name": "deleted_at",
+      "json_tag": "deletedAt",
+      "go_type": "*time.Time",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Timestamp when the application was deleted",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [40, 40]
+      }
+    },
+    {
+      "name": "matches",
+      "json_tag": "matches",
+      "go_type": "LoanApplicationMatches",
+      "data_type": "array",
+      "required": false,
+      "description": "Lender match results",
+      "model_ref": "loan_application.match",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [41, 41]
+      }
+    },
+    {
+      "name": "quotes",
+      "json_tag": "quotes",
+      "go_type": "LoanApplicationQuotes",
+      "data_type": "array",
+      "required": false,
+      "description": "Lender quotes",
+      "model_ref": "loan_application.quote",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [42, 42]
+      }
+    },
+    {
+      "name": "applicant",
+      "json_tag": "applicant",
+      "go_type": "*LoanApplicant",
+      "data_type": "object",
+      "required": false,
+      "description": "Primary applicant information",
+      "model_ref": "loan_application.applicant",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [45, 45]
+      }
+    },
+    {
+      "name": "identity",
+      "json_tag": "identity",
+      "go_type": "*LoanIdentity",
+      "data_type": "object",
+      "required": false,
+      "description": "Identity verification document details",
+      "model_ref": "loan_application.identity",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [46, 46]
+      }
+    },
+    {
+      "name": "current_residence",
+      "json_tag": "currentResidence",
+      "go_type": "*LoanResidence",
+      "data_type": "object",
+      "required": false,
+      "description": "Current residence address",
+      "model_ref": "loan_application.residence",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [47, 47]
+      }
+    },
+    {
+      "name": "previous_residence",
+      "json_tag": "previousResidence",
+      "go_type": "*LoanResidence",
+      "data_type": "object",
+      "required": false,
+      "description": "Previous residence address",
+      "model_ref": "loan_application.residence",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [48, 48]
+      }
+    },
+    {
+      "name": "current_employment",
+      "json_tag": "currentEmployment",
+      "go_type": "*LoanEmployment",
+      "data_type": "object",
+      "required": false,
+      "description": "Current employment details",
+      "model_ref": "loan_application.employment",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [49, 49]
+      }
+    },
+    {
+      "name": "previous_employment",
+      "json_tag": "previousEmployment",
+      "go_type": "*LoanPreviousEmployment",
+      "data_type": "object",
+      "required": false,
+      "description": "Previous employment details",
+      "model_ref": "loan_application.previous_employment",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [50, 50]
+      }
+    },
+    {
+      "name": "other_income",
+      "json_tag": "otherIncome",
+      "go_type": "*LoanOtherIncome",
+      "data_type": "object",
+      "required": false,
+      "description": "Other income source details",
+      "model_ref": "loan_application.other_income",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [51, 51]
+      }
+    },
+    {
+      "name": "partner_income",
+      "json_tag": "partnerIncome",
+      "go_type": "*LoanPartnerIncome",
+      "data_type": "object",
+      "required": false,
+      "description": "Partner income details",
+      "model_ref": "loan_application.partner_income",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [52, 52]
+      }
+    },
+    {
+      "name": "expenses",
+      "json_tag": "expenses",
+      "go_type": "*LoanExpenses",
+      "data_type": "object",
+      "required": false,
+      "description": "Declared housing and living expenses",
+      "model_ref": "loan_application.expenses",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [53, 53]
+      }
+    },
+    {
+      "name": "credit_cards",
+      "json_tag": "creditCards",
+      "go_type": "[]LoanCreditCard",
+      "data_type": "array",
+      "required": false,
+      "description": "Credit card liabilities",
+      "model_ref": "loan_application.credit_card",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [54, 54]
+      }
+    },
+    {
+      "name": "existing_loans",
+      "json_tag": "existingLoans",
+      "go_type": "[]LoanExistingLoan",
+      "data_type": "array",
+      "required": false,
+      "description": "Existing loan liabilities",
+      "model_ref": "loan_application.existing_loan",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [55, 55]
+      }
+    },
+    {
+      "name": "quote_failures",
+      "json_tag": "quoteFailures",
+      "go_type": "[]LoanQuoteFailure",
+      "data_type": "array",
+      "required": false,
+      "description": "Failed quote attempts",
+      "model_ref": "loan_application.quote_failure",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [56, 56]
+      }
+    },
+    {
+      "name": "data_export",
+      "json_tag": "dataExport",
+      "go_type": "*LoanDataExport",
+      "data_type": "object",
+      "required": false,
+      "description": "Information about exported application data",
+      "model_ref": "loan_application.data_export",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [57, 57]
+      }
+    }
+  ]
+}

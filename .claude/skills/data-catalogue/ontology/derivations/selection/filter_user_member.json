@@ -1,0 +1,66 @@
+{
+  "id": "filter_user_member",
+  "name": "Filter User Member",
+  "description": "Filter member records by user_id and ensure user is not deleted (is_deleted = false). This is the base filter that all other user filtering derivations should depend on to ensure operations only apply to active, non-deleted users.",
+  "steps": [
+    {
+      "id": "filter_by_user",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "member"
+        }
+      ],
+      "predicate": {
+        "field": "uid",
+        "operator": "eq",
+        "value": ":user_id"
+      }
+    },
+    {
+      "id": "filter_not_deleted",
+      "operation": "filter",
+      "inputs": [
+        {
+          "step": "filter_by_user"
+        }
+      ],
+      "predicate": {
+        "field": "is_deleted",
+        "operator": "eq",
+        "value": false
+      }
+    },
+    {
+      "id": "result",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "filter_not_deleted"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "result"
+  },
+  "depends_on": {
+    "models": [
+      "member"
+    ]
+  },
+  "source": {
+    "repo": "usermanager",
+    "path": [
+      "storage",
+      "db",
+      "migrations",
+      "000041_users.up.sql"
+    ],
+    "lines": [
+      2,
+      4
+    ],
+    "symbol": "users table - WHERE uid = ? AND is_deleted = false"
+  }
+}

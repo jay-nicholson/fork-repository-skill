@@ -1,0 +1,76 @@
+{
+  "id": "count_missed_payments",
+  "name": "Count Missed Payments",
+  "description": "Count credit account repayments where warning !== 0. Used in RiskFlagsBar to show missed payment count.",
+  "steps": [
+    {
+      "id": "get_repayments_with_warning",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "compute_repayment_warning"
+        }
+      ],
+      "description": "Get repayments with computed warning levels"
+    },
+    {
+      "id": "filter_missed",
+      "operation": "filter",
+      "inputs": [
+        {
+          "step": "get_repayments_with_warning"
+        }
+      ],
+      "predicate": {
+        "field": "warning",
+        "operator": "neq",
+        "value": 0
+      },
+      "description": "WHERE warning != 0"
+    },
+    {
+      "id": "count_missed",
+      "operation": "aggregate",
+      "inputs": [
+        {
+          "step": "filter_missed"
+        }
+      ],
+      "aggregator": {
+        "type": "count"
+      },
+      "description": "COUNT(*)"
+    }
+  ],
+  "output": {
+    "step": "count_missed",
+    "description": "Number of missed payments (warning != 0)",
+    "type": "number"
+  },
+  "depends_on": {
+    "derivations": [
+      "compute_repayment_warning"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch-admin-portal",
+    "path": [
+      "src",
+      "components",
+      "risk-flags-bar",
+      "RiskFlagsBar.tsx"
+    ],
+    "lines": [
+      89,
+      114
+    ],
+    "symbol": "accountsWithMissedPayments"
+  },
+  "ui_outputs": [
+    {
+      "component": "RiskFlagsBar",
+      "label": "Missed Payments",
+      "format": "count"
+    }
+  ]
+}

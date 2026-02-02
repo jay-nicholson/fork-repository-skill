@@ -1,0 +1,47 @@
+{
+  "id": "extract_account_balance",
+  "name": "Extract Account Balance",
+  "description": "Extract current balance from CDR account for display in credit account view",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_accounts" }],
+      "description": "Get user's CDR accounts"
+    },
+    {
+      "id": "extract_field",
+      "operation": "select",
+      "inputs": [
+        { "step": "get_accounts" },
+        { "literal": "balance" }
+      ],
+      "description": "Extract balance field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Current account balance"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts"],
+    "fields": ["account.balance"]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.balance"]
+  },
+  "ui_outputs": [
+    {
+      "component": "FinancialMetrics",
+      "label": "Balance",
+      "format": "currency"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [190, 193],
+    "symbol": "balance"
+  }
+}

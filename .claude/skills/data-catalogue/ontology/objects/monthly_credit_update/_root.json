@@ -1,0 +1,166 @@
+{
+  "id": "monthly_credit_update",
+  "name": "Monthly Credit Update",
+  "description": "Monthly credit account repayment status with computed warning level. Output shape of compute_repayment_warning derivation.",
+  "source": {
+    "type": "derived",
+    "derives_from": [
+      "credit_repayment"
+    ],
+    "computed_from": {
+      "process": {
+        "function": "updates",
+        "lines": [
+          161,
+          184
+        ],
+        "description": "Transforms credit_repayment records by computing warning level from status via creditWarning()"
+      }
+    }
+  },
+  "fields": [
+    {
+      "name": "month",
+      "data_type": "number",
+      "required": true,
+      "description": "Month number (1-12)",
+      "json_tag": "month",
+      "go_type": "int",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": [
+          "credit",
+          "model",
+          "report.go"
+        ],
+        "lines": [
+          123,
+          123
+        ],
+        "field_name": "Month"
+      }
+    },
+    {
+      "name": "warning",
+      "data_type": "number",
+      "required": true,
+      "description": "Warning level computed from status: 0=current/paid, 1-6=months overdue, 7=worst (X), -1=unknown",
+      "json_tag": "warning",
+      "go_type": "int",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": [
+          "credit",
+          "model",
+          "report.go"
+        ],
+        "lines": [
+          124,
+          124
+        ],
+        "field_name": "Warning"
+      },
+      "derivation_ref": "compute_repayment_warning"
+    },
+    {
+      "name": "status",
+      "data_type": "text",
+      "required": true,
+      "description": "Payment status code (0, 1-6, C, A, R, P, T, X)",
+      "json_tag": "status",
+      "go_type": "string",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": [
+          "credit",
+          "model",
+          "report.go"
+        ],
+        "lines": [
+          125,
+          125
+        ],
+        "field_name": "Status"
+      }
+    },
+    {
+      "name": "detail",
+      "data_type": "text",
+      "required": true,
+      "description": "Additional details about the payment",
+      "json_tag": "detail",
+      "go_type": "string",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": [
+          "credit",
+          "model",
+          "report.go"
+        ],
+        "lines": [
+          126,
+          126
+        ],
+        "field_name": "Detail"
+      }
+    },
+    {
+      "name": "paid",
+      "data_type": "number",
+      "required": false,
+      "description": "Amount paid",
+      "json_tag": "paid",
+      "go_type": "*big.Float",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": [
+          "credit",
+          "model",
+          "report.go"
+        ],
+        "lines": [
+          127,
+          127
+        ],
+        "field_name": "Paid"
+      }
+    },
+    {
+      "name": "date",
+      "data_type": "text",
+      "required": false,
+      "description": "Payment date",
+      "json_tag": "date",
+      "go_type": "string",
+      "backend_ref": {
+        "repo": "creditor",
+        "path": [
+          "credit",
+          "model",
+          "report.go"
+        ],
+        "lines": [
+          128,
+          128
+        ],
+        "field_name": "Date"
+      }
+    }
+  ],
+  "backend_ref": {
+    "repo": "creditor",
+    "path": [
+      "credit",
+      "model",
+      "report.go"
+    ],
+    "lines": [
+      122,
+      129
+    ]
+  },
+  "populated_by": {
+    "derivation": "compute_repayment_warning",
+    "description": "Transforms credit_repayment.status into warning level (0-7)"
+  }
+}

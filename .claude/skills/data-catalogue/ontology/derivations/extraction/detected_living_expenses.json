@@ -1,0 +1,191 @@
+{
+  "id": "detected_living_expenses",
+  "name": "Detected Living Expenses",
+  "description": "Sum of: (1) monthly amounts from active/regular Obligations streams, (2) monthly amounts from active/regular Discretionary streams, (3) total Sum of ALL Essentials streams divided by 12. Per MapDetected source.",
+  "steps": [
+    {
+      "id": "filter_obligations",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "debit"
+          },
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active"
+          },
+          {
+            "field": "cadence_category",
+            "operator": "neq",
+            "value": "Irregular"
+          },
+          {
+            "field": "category.hem_expense_type",
+            "operator": "eq",
+            "value": "non_hem_obligation"
+          }
+        ]
+      },
+      "description": "Active, regular streams with HEM expense type = non_hem_obligation"
+    },
+    {
+      "id": "filter_discretionary",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "debit"
+          },
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active"
+          },
+          {
+            "field": "cadence_category",
+            "operator": "neq",
+            "value": "Irregular"
+          },
+          {
+            "field": "category.hem_expense_type",
+            "operator": "eq",
+            "value": "hem_discretionary_basic"
+          }
+        ]
+      },
+      "description": "Active, regular streams with HEM expense type = hem_discretionary_basic"
+    },
+    {
+      "id": "filter_essentials",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "debit"
+          },
+          {
+            "field": "category.hem_expense_type",
+            "operator": "eq",
+            "value": "hem_essential"
+          }
+        ]
+      },
+      "description": "ALL streams with HEM expense type = hem_essential (no active/regular filter!)"
+    },
+    {
+      "id": "sum_living",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "filter_obligations"
+        },
+        {
+          "step": "filter_discretionary"
+        },
+        {
+          "step": "filter_essentials"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "obligations",
+              "type": "array",
+              "required": true
+            },
+            {
+              "name": "discretionary",
+              "type": "array",
+              "required": true
+            },
+            {
+              "name": "essentials",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly",
+          "nullable": true
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "shared",
+            "queries",
+            "member",
+            "map_detected.go"
+          ],
+          "lines": [
+            69,
+            84
+          ],
+          "symbol": "MapDetected - livingExpenses calculation"
+        },
+        "description": "Sum: obligations monthly + discretionary monthly + (essentials.Sum / 12)"
+      }
+    }
+  ],
+  "output": {
+    "step": "sum_living",
+    "unit": "AUD_monthly",
+    "description": "Total monthly living expenses from HEM-categorized streams"
+  },
+  "depends_on": {
+    "derivations": [
+      "aggregate_streams"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      69,
+      84
+    ],
+    "symbol": "MapDetected - livingExpenses calculation"
+  },
+  "notes": {
+    "calculation": {
+      "obligations": "sum of calculateMonthlyAmount() for active/regular streams",
+      "discretionary": "sum of calculateMonthlyAmount() for active/regular streams",
+      "essentials": "sum of stream.Sum field / 12 (annual to monthly, no active/regular filter)"
+    },
+    "hem_expense_types": [
+      "non_hem_obligation",
+      "hem_discretionary_basic",
+      "hem_essential"
+    ]
+  }
+}

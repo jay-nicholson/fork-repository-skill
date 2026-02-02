@@ -1,0 +1,64 @@
+{
+  "id": "select_latest_credit_characteristics",
+  "name": "Select Latest Credit Characteristics",
+  "description": "From filtered credit characteristics, get the most recent by period. Query: ... ORDER BY period DESC LIMIT 1",
+  "steps": [
+    {
+      "id": "get_user_characteristics",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_credit_characteristics"
+        }
+      ],
+      "description": "Get filtered credit characteristics for user"
+    },
+    {
+      "id": "sort_by_period_desc",
+      "operation": "sort",
+      "inputs": [
+        {
+          "step": "get_user_characteristics"
+        }
+      ],
+      "by": "period",
+      "order": "desc",
+      "description": "ORDER BY period DESC"
+    },
+    {
+      "id": "take_first",
+      "operation": "first",
+      "inputs": [
+        {
+          "step": "sort_by_period_desc"
+        }
+      ],
+      "description": "LIMIT 1"
+    }
+  ],
+  "output": {
+    "step": "take_first",
+    "description": "Latest credit_characteristic record (CX/NX codes) for user"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_credit_characteristics"
+    ],
+    "fields": [
+      "credit_characteristic.period"
+    ]
+  },
+  "source": {
+    "repo": "creditor",
+    "path": [
+      "storage",
+      "db",
+      "characteristics.go"
+    ],
+    "lines": [
+      1664,
+      1665
+    ],
+    "symbol": "ORDER BY period DESC LIMIT 1"
+  }
+}

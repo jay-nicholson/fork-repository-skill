@@ -1,0 +1,96 @@
+{
+  "id": "lender_rules",
+  "name": "Lender Eligibility Rules",
+  "description": "Grule rule engine files (.grl) organized by input phase. Phase 1 (Declared) + Phase 2 (Credit) = deterministic. Phase 3 (Detected) = non-deterministic.",
+  "source": {
+    "type": "file_based",
+    "path": "brightmatch/rules/lender/{lender_name}/*.grl",
+    "format": "grule"
+  },
+  "derivation_ref": "evaluate_lender_eligibility",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "matchingengine", "provider.go"],
+    "lines": [50, 60],
+    "symbol": "GetLenderRules"
+  },
+  "fields": [
+    {
+      "name": "lender_name",
+      "data_type": "text",
+      "required": true,
+      "description": "Lender identifier",
+      "allowed_values": ["jacaranda", "latitude", "nowfinance", "ourmoneymarket", "plenti", "wisr"]
+    },
+    {
+      "name": "income_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Income threshold rules (declared phase)",
+      "model_ref": "lender_rules.income"
+    },
+    {
+      "name": "employment_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Employment eligibility rules (declared phase)",
+      "model_ref": "lender_rules.employment"
+    },
+    {
+      "name": "loan_terms_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Loan amount/purpose rules (declared phase)",
+      "model_ref": "lender_rules.loan_terms"
+    },
+    {
+      "name": "demographics_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Age/gender rules (declared phase)",
+      "model_ref": "lender_rules.demographics"
+    },
+    {
+      "name": "identity_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Identity document rules (declared phase)",
+      "model_ref": "lender_rules.identity"
+    },
+    {
+      "name": "residence_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Residence type rules (declared phase)",
+      "model_ref": "lender_rules.residence"
+    },
+    {
+      "name": "credit_score_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Credit score threshold rules (credit phase)",
+      "model_ref": "lender_rules.credit_scores"
+    },
+    {
+      "name": "credit_history_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Credit history/adverse event rules (credit phase)",
+      "model_ref": "lender_rules.credit_history"
+    },
+    {
+      "name": "sacc_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "SACC lending history rules (detected phase)",
+      "model_ref": "lender_rules.sacc"
+    },
+    {
+      "name": "capacity_rules",
+      "data_type": "object",
+      "required": false,
+      "description": "Repayment capacity rules (detected phase)",
+      "model_ref": "lender_rules.capacity"
+    }
+  ]
+}

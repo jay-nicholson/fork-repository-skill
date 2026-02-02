@@ -1,0 +1,165 @@
+{
+  "id": "lookup_hem_benchmark",
+  "name": "HEM Benchmark Lookup",
+  "description": "Calculate Household Expenditure Measure benchmark from lookup table based on location and household composition",
+  "steps": [
+    {
+      "id": "state",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "current_residence.state"
+        }
+      ]
+    },
+    {
+      "id": "postcode",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "current_residence.post_code"
+        }
+      ]
+    },
+    {
+      "id": "marital_status",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "applicant.marital_status"
+        }
+      ]
+    },
+    {
+      "id": "dependents",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "applicant.number_of_dependents"
+        }
+      ]
+    },
+    {
+      "id": "income",
+      "operation": "sum",
+      "inputs": [
+        {
+          "derivation": "declared_primary_income"
+        },
+        {
+          "derivation": "declared_other_income"
+        }
+      ]
+    },
+    {
+      "id": "benchmark",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "state"
+        },
+        {
+          "step": "postcode"
+        },
+        {
+          "step": "marital_status"
+        },
+        {
+          "step": "dependents"
+        },
+        {
+          "step": "income"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "state",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "postcode",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "marital_status",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "dependents",
+              "type": "number",
+              "required": true
+            },
+            {
+              "name": "income",
+              "type": "number",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "src",
+            "shared",
+            "queries",
+            "member",
+            "map_hem.go"
+          ],
+          "lines": [
+            66,
+            94
+          ],
+          "symbol": "calculateHEMSMonthlyBenchmark"
+        },
+        "description": "Lookup HEM benchmark from table using state, postcode, household composition (partner status derived from marital_status, dependents count), and income bracket"
+      }
+    }
+  ],
+  "output": {
+    "step": "benchmark",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application",
+      "declared_primary_income",
+      "declared_other_income"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_hem.go"
+    ],
+    "lines": [
+      66,
+      94
+    ],
+    "symbol": "calculateHEMSMonthlyBenchmark"
+  }
+}

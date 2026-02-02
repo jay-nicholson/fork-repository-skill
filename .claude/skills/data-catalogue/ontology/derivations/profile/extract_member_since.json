@@ -1,0 +1,65 @@
+{
+  "id": "extract_member_since",
+  "name": "Extract Member Since",
+  "description": "Extract member since date from member. Used in Header component to show membership duration.",
+  "steps": [
+    {
+      "id": "get_member",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        }
+      ],
+      "description": "Get filtered member for user"
+    },
+    {
+      "id": "extract_date",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_member"
+        },
+        {
+          "literal": "member_since"
+        }
+      ],
+      "description": "Extract member_since date"
+    }
+  ],
+  "output": {
+    "step": "extract_date",
+    "description": "Member since date",
+    "type": "datetime"
+  },
+  "depends_on": {
+    "derivations": [
+      "filter_user_member"
+    ],
+    "fields": [
+      "member.member_since"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_profile.go"
+    ],
+    "lines": [
+      61,
+      63
+    ],
+    "symbol": "MapUserProfile"
+  },
+  "ui_outputs": [
+    {
+      "component": "Header",
+      "label": "Member Since",
+      "format": "date"
+    }
+  ]
+}

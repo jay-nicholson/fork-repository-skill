@@ -1,0 +1,25 @@
+{
+  "id": "loan_application.previous_employment",
+  "name": "Loan Previous Employment",
+  "description": "Previous employment details",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [141, 143]
+  },
+  "fields": [
+    {
+      "name": "employer_name",
+      "json_tag": "employerName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Name of previous employer",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [142, 142]
+      }
+    }
+  ]
+}

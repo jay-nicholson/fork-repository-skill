@@ -1,0 +1,47 @@
+{
+  "id": "extract_account_interest_rate",
+  "name": "Extract Account Interest Rate",
+  "description": "Extract interest rate from CDR account for display in credit account view",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [{ "derivation": "filter_user_accounts" }],
+      "description": "Get user's CDR accounts"
+    },
+    {
+      "id": "extract_field",
+      "operation": "select",
+      "inputs": [
+        { "step": "get_accounts" },
+        { "literal": "interest_rate" }
+      ],
+      "description": "Extract interest_rate field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Interest rate as percentage"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts"],
+    "fields": ["account.interest_rate"]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.interest_rate"]
+  },
+  "ui_outputs": [
+    {
+      "component": "FinancialMetrics",
+      "label": "Interest Rate",
+      "format": "percentage"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [176, 188],
+    "symbol": "rateFloat"
+  }
+}

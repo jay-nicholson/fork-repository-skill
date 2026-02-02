@@ -1,0 +1,127 @@
+{
+  "id": "user_lender_outcomes",
+  "name": "User Lender Outcomes",
+  "description": "Tracks lending outcomes for users across different lenders and flows",
+  "source": {
+    "type": "database",
+    "database": "brightmatch",
+    "table": "user_lender_outcomes"
+  },
+  "backend_ref": "banking/modules/portal/domain/ports/lender_outcomes.go",
+  "fields": [
+    {
+      "name": "user_id",
+      "data_type": "text",
+      "required": true,
+      "description": "User ID associated with this outcome",
+      "json_tag": "user_id",
+      "go_type": "string"
+    },
+    {
+      "name": "application_id",
+      "data_type": "text",
+      "required": false,
+      "description": "BrightMatch application ID (nullable for Standard Flow)",
+      "json_tag": "application_id",
+      "go_type": "*string"
+    },
+    {
+      "name": "partner_application_id",
+      "data_type": "text",
+      "required": false,
+      "description": "Partner/lender application reference ID",
+      "json_tag": "partner_application_id",
+      "go_type": "*string"
+    },
+    {
+      "name": "flow",
+      "data_type": "text",
+      "required": true,
+      "description": "Application flow type",
+      "allowed_values": ["BrightMatch", "Standard"],
+      "json_tag": "flow",
+      "go_type": "string"
+    },
+    {
+      "name": "lender",
+      "data_type": "text",
+      "required": true,
+      "description": "Lender name/identifier",
+      "json_tag": "lender",
+      "go_type": "string"
+    },
+    {
+      "name": "application_submitted",
+      "data_type": "boolean",
+      "required": true,
+      "description": "Whether the application was submitted",
+      "json_tag": "application_submitted",
+      "go_type": "bool"
+    },
+    {
+      "name": "stage",
+      "data_type": "text",
+      "required": false,
+      "description": "Current stage of the application",
+      "allowed_values": ["Approved", "Referred", "Declined", "Pending"],
+      "json_tag": "stage",
+      "go_type": "*string"
+    },
+    {
+      "name": "application_date",
+      "data_type": "date",
+      "required": false,
+      "description": "Date of application",
+      "json_tag": "application_date",
+      "go_type": "*time.Time"
+    },
+    {
+      "name": "credit_score",
+      "data_type": "number",
+      "required": false,
+      "description": "Credit score at time of application",
+      "json_tag": "credit_score",
+      "go_type": "*int"
+    },
+    {
+      "name": "requested_amount",
+      "data_type": "number",
+      "required": false,
+      "description": "Requested loan amount",
+      "json_tag": "requested_amount",
+      "go_type": "*float64"
+    },
+    {
+      "name": "loan_purpose",
+      "data_type": "text",
+      "required": false,
+      "description": "Purpose of the loan",
+      "json_tag": "loan_purpose",
+      "go_type": "*string"
+    },
+    {
+      "name": "decline_reason_quote",
+      "data_type": "text",
+      "required": false,
+      "description": "Reason for decline at quote stage",
+      "json_tag": "decline_reason_quote",
+      "go_type": "*string"
+    },
+    {
+      "name": "decline_reason_application",
+      "data_type": "text",
+      "required": false,
+      "description": "Reason for decline at application stage",
+      "json_tag": "decline_reason_application",
+      "go_type": "*string"
+    },
+    {
+      "name": "updated_at",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Last update timestamp",
+      "json_tag": "updated_at",
+      "go_type": "time.Time"
+    }
+  ]
+}

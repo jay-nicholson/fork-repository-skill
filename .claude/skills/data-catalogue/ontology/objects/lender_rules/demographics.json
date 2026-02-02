@@ -1,0 +1,23 @@
+{
+  "id": "lender_rules.demographics",
+  "name": "Demographics Rules",
+  "description": "Age and gender eligibility checks",
+  "phase": "declared",
+  "deterministic": true,
+  "derivation_ref": "evaluate_demographics_rules",
+  "lenders_with_rules": ["jacaranda", "ourmoneymarket", "plenti"],
+  "fields": [
+    {
+      "name": "age",
+      "data_type": "number",
+      "required": true,
+      "description": "Applicant age in years"
+    },
+    {
+      "name": "gender",
+      "data_type": "text",
+      "required": false,
+      "description": "Applicant gender"
+    }
+  ]
+}

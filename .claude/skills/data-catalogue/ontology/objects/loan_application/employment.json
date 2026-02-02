@@ -1,0 +1,90 @@
+{
+  "id": "loan_application.employment",
+  "name": "Loan Employment",
+  "description": "Current employment details",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [131, 138]
+  },
+  "fields": [
+    {
+      "name": "type",
+      "json_tag": "type",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Employment type (e.g., full_time, part_time, casual, self_employed)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [132, 132]
+      }
+    },
+    {
+      "name": "employer_name",
+      "json_tag": "employerName",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Name of employer or business name if self-employed",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [133, 133]
+      }
+    },
+    {
+      "name": "start_date",
+      "json_tag": "startDate",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Date employment started (YYYY-MM-DD format)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [134, 134]
+      }
+    },
+    {
+      "name": "amount",
+      "json_tag": "amount",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Income amount from this employment",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [135, 135]
+      }
+    },
+    {
+      "name": "is_pre_tax",
+      "json_tag": "isPreTax",
+      "go_type": "*bool",
+      "data_type": "boolean",
+      "required": false,
+      "description": "Whether the income amount is before tax (gross) or after tax (net)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [136, 136]
+      }
+    },
+    {
+      "name": "frequency",
+      "json_tag": "frequency",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Pay frequency (e.g., weekly, fortnightly, monthly, annual)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [137, 137]
+      }
+    }
+  ]
+}

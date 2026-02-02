@@ -1,32 +1,40 @@
 #!/bin/bash
-# Sync data catalogue documentation from we-money/brightmatch-data-catalogue
-# This fetches key documentation files for reference, not the full repo
+# Sync data catalogue from we-money/brightmatch-data-catalogue
+# Now includes full model/derivation sync (not just file lists)
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO="we-money/brightmatch-data-catalogue"
 LOCAL_PATH=".claude/skills/data-catalogue/docs"
 
-echo "Syncing data catalogue documentation from $REPO..."
+echo "=========================================="
+echo "Data Catalogue Sync"
+echo "=========================================="
 
-# Create docs directory if it doesn't exist
+# 1. Sync documentation (existing behavior)
+echo ""
+echo "Step 1: Documentation..."
 mkdir -p "$LOCAL_PATH"
 
-# Sync INDEX.md
 echo "  Fetching docs/INDEX.md..."
-gh api repos/$REPO/contents/docs/INDEX.md --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/INDEX.md" 2>/dev/null || echo "  Warning: Could not fetch INDEX.md"
+gh api repos/$REPO/contents/docs/INDEX.md \
+    --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/INDEX.md" 2>/dev/null || echo "  Warning: INDEX.md not found"
 
-# Sync CLAUDE.md
 echo "  Fetching .claude/CLAUDE.md..."
-gh api repos/$REPO/contents/.claude/CLAUDE.md --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/CATALOGUE_CLAUDE.md" 2>/dev/null || echo "  Warning: Could not fetch CLAUDE.md"
+gh api repos/$REPO/contents/.claude/CLAUDE.md \
+    --jq '.content' 2>/dev/null | base64 -d > "$LOCAL_PATH/CATALOGUE_CLAUDE.md" 2>/dev/null || echo "  Warning: CLAUDE.md not found"
 
-# List available models (for reference)
-echo "  Listing available models..."
-gh api repos/$REPO/contents/public/data-catalogue/models --jq '.[].name' 2>/dev/null > "$LOCAL_PATH/MODELS_LIST.txt" || echo "  Warning: Could not list models"
+# 2. Sync models and derivations (NEW - full content sync)
+echo ""
+echo "Step 2: Models and derivations..."
+bash "$SCRIPT_DIR/sync-data-catalogue.sh" --incremental
 
-# List available derivations (for reference)
-echo "  Listing available derivations..."
-gh api repos/$REPO/contents/public/data-catalogue/derivations --jq '.[].name' 2>/dev/null > "$LOCAL_PATH/DERIVATIONS_LIST.txt" || echo "  Warning: Could not list derivations"
-
-echo "Sync complete. Files in $LOCAL_PATH:"
-ls -la "$LOCAL_PATH"
+echo ""
+echo "=========================================="
+echo "Sync complete."
+echo ""
+echo "Files synced to:"
+echo "  - Documentation: $LOCAL_PATH/"
+echo "  - Models: .claude/skills/data-catalogue/ontology/objects/"
+echo "  - Derivations: .claude/skills/data-catalogue/ontology/derivations/"

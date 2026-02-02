@@ -1,0 +1,91 @@
+{
+  "id": "declared_primary_income",
+  "name": "Declared Primary Income",
+  "description": "Extract, normalize to monthly, and convert to post-tax the primary employment income from loan application",
+  "steps": [
+    {
+      "id": "raw_amount",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "current_employment.amount"
+        }
+      ]
+    },
+    {
+      "id": "frequency",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "current_employment.frequency"
+        }
+      ]
+    },
+    {
+      "id": "is_pre_tax",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "current_employment.is_pre_tax"
+        }
+      ]
+    },
+    {
+      "id": "monthly",
+      "operation": "normalise_monthly",
+      "inputs": [
+        {
+          "step": "raw_amount"
+        },
+        {
+          "step": "frequency"
+        }
+      ]
+    },
+    {
+      "id": "post_tax",
+      "operation": "to_post_tax",
+      "inputs": [
+        {
+          "step": "monthly"
+        },
+        {
+          "step": "is_pre_tax"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "post_tax",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_declared.go"
+    ],
+    "lines": [
+      60,
+      62
+    ],
+    "symbol": "MapDeclared - MonthlyPostTaxEmploymentIncome"
+  }
+}

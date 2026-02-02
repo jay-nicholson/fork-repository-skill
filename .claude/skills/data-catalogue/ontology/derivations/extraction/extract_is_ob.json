@@ -1,0 +1,75 @@
+{
+  "id": "extract_is_ob",
+  "name": "Extract Is Open Banking",
+  "description": "Extracts the is_ob boolean field from connected accounts to indicate whether account data comes from CDR (Open Banking) or screen scraping. Used to display data source badges in the UI.",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_accounts"
+        }
+      ],
+      "description": "Get connected accounts for user"
+    },
+    {
+      "id": "extract_field",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_accounts"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "accounts", "type": "array", "required": true }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Accounts with is_ob field extracted"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+          "lines": [217, 217],
+          "symbol": "MapAccounts"
+        },
+        "description": "Pass through is_ob field from source account data. Field originates from categorizer.accounts.is_ob column."
+      },
+      "description": "Extract is_ob field from each account"
+    }
+  ],
+  "output": {
+    "step": "extract_field",
+    "description": "Accounts with is_ob boolean (true=CDR/Open Banking, false=Screen Scraping)"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts"],
+    "fields": ["account.is_ob"]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [217, 217],
+    "symbol": "MapAccounts"
+  },
+  "ui_outputs": [
+    {
+      "component": "DataSourceBadge",
+      "label": "CDR/Scraping Badge",
+      "format": "boolean",
+      "description": "Blue 'CDR' badge when isOb=true, grey 'Scraping' badge when false"
+    }
+  ],
+  "notes": {
+    "type": "field_passthrough",
+    "no_transformation": "Value passed directly from account.is_ob without modification",
+    "data_source": "categorizer.accounts.is_ob column",
+    "true_meaning": "Account connected via Consumer Data Right (Open Banking)",
+    "false_meaning": "Account connected via screen scraping aggregator"
+  }
+}

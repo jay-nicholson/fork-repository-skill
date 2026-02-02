@@ -1,0 +1,128 @@
+{
+  "id": "detected_housing_expenses",
+  "name": "Detected Housing Expenses",
+  "description": "Sum of active, regular debit streams for rent or primary mortgage ONLY. Per MapDetected source, utilities are NOT included in housing.",
+  "steps": [
+    {
+      "id": "filter_housing_streams",
+      "operation": "filter",
+      "inputs": [
+        {
+          "derivation": "aggregate_streams"
+        }
+      ],
+      "predicate": {
+        "and": [
+          {
+            "field": "direction",
+            "operator": "eq",
+            "value": "debit"
+          },
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active"
+          },
+          {
+            "field": "cadence_category",
+            "operator": "neq",
+            "value": "Irregular"
+          },
+          {
+            "field": "category.hem_expense_type",
+            "operator": "is_not_null"
+          },
+          {
+            "or": [
+              {
+                "field": "category.code",
+                "operator": "eq",
+                "value": "expense.housing.rent"
+              },
+              {
+                "field": "category.code",
+                "operator": "eq",
+                "value": "expense.housing.primary_mortgage"
+              }
+            ]
+          }
+        ]
+      },
+      "description": "Filter for rent and primary_mortgage streams only (not utilities)"
+    },
+    {
+      "id": "sum_monthly",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "filter_housing_streams"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "streams",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly",
+          "nullable": true
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "shared",
+            "queries",
+            "member",
+            "map_detected.go"
+          ],
+          "lines": [
+            59,
+            63
+          ],
+          "symbol": "calculateMonthlyAmount per stream, then sum"
+        },
+        "description": "Sum monthly amounts from rent and mortgage streams."
+      }
+    }
+  ],
+  "output": {
+    "step": "sum_monthly",
+    "unit": "AUD_monthly",
+    "description": "Total monthly housing (rent + mortgage) from transaction streams"
+  },
+  "depends_on": {
+    "derivations": [
+      "aggregate_streams"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      59,
+      63
+    ],
+    "symbol": "MapDetected - housing calculation"
+  },
+  "notes": {
+    "included_categories": [
+      "expense.housing.rent",
+      "expense.housing.primary_mortgage"
+    ],
+    "excluded": [
+      "expense.housing.utilities",
+      "expense.housing.*"
+    ]
+  }
+}

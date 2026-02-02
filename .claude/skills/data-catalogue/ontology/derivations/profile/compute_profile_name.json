@@ -1,0 +1,105 @@
+{
+  "id": "compute_profile_name",
+  "name": "Compute Profile Name",
+  "description": "Concatenate first_name and family_name from member model to create the full display name for the user profile. Depends on filter_user_member to ensure we're operating on the correct user's data.",
+  "steps": [
+    {
+      "id": "get_first_name",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        },
+        {
+          "literal": "first_name"
+        }
+      ],
+      "description": "Extract first_name from filtered member"
+    },
+    {
+      "id": "get_family_name",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "filter_user_member"
+        },
+        {
+          "literal": "family_name"
+        }
+      ],
+      "description": "Extract family_name from filtered member"
+    },
+    {
+      "id": "concatenate_name",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_first_name"
+        },
+        {
+          "step": "get_family_name"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "first_name",
+              "type": "text",
+              "required": false
+            },
+            {
+              "name": "family_name",
+              "type": "text",
+              "required": false
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "text",
+          "nullable": true,
+          "description": "Full name as 'first_name family_name'"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "src",
+            "shared",
+            "queries",
+            "member",
+            "map_profile.go"
+          ],
+          "lines": [
+            42,
+            60
+          ],
+          "symbol": "MapProfile"
+        },
+        "description": "Concatenate first_name + ' ' + family_name. Returns null if both are empty."
+      },
+      "description": "Concatenate first and family name with space separator"
+    }
+  ],
+  "output": {
+    "step": "concatenate_name",
+    "type": "text"
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_profile.go"
+    ],
+    "symbol": "MapProfile"
+  },
+  "ui_outputs": [
+    {
+      "component": "HeaderBar",
+      "label": "User's Name",
+      "format": "text"
+    }
+  ]
+}

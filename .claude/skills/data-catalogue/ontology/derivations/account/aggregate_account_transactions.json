@@ -1,0 +1,116 @@
+{
+  "id": "aggregate_account_transactions",
+  "name": "Aggregate Account Transactions",
+  "description": "Computes transaction statistics for an account: count, earliest date, latest date. Joins accounts with transactions by account_id.",
+  "steps": [
+    {
+      "id": "get_accounts",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_accounts"
+        }
+      ],
+      "description": "Get user's accounts"
+    },
+    {
+      "id": "get_transactions",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_transactions"
+        }
+      ],
+      "description": "Get user's transaction analysis"
+    },
+    {
+      "id": "compute_stats",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_accounts"
+        },
+        {
+          "step": "get_transactions"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "accounts",
+              "type": "array",
+              "required": true
+            },
+            {
+              "name": "transaction_analysis",
+              "type": "object",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "object",
+          "description": "Transaction statistics per account",
+          "fields": {
+            "number_of_transactions": { "type": "number", "description": "Count of transactions" },
+            "transaction_period_start": { "type": "text", "description": "Earliest transaction date (YYYY-MM-DD)" },
+            "transaction_period_end": { "type": "text", "description": "Latest transaction date (YYYY-MM-DD)" }
+          }
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+          "lines": [222, 265],
+          "symbol": "mapTransactionStatistics"
+        },
+        "description": "For each account, count transactions and find min/max transacted_at dates by joining on account_id"
+      }
+    }
+  ],
+  "output": {
+    "step": "compute_stats",
+    "description": "Transaction statistics - number_of_transactions, transaction_period_start, transaction_period_end"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts", "filter_user_transactions"],
+    "fields": [
+      "account.id",
+      "user_transaction_analysis.transactions"
+    ]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": [
+      "portal_account.number_of_transactions",
+      "portal_account.transaction_period_start",
+      "portal_account.transaction_period_end"
+    ]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "field": "number_of_transactions",
+      "label": "Transaction Count",
+      "format": "count"
+    },
+    {
+      "component": "CreditAccountCard",
+      "field": "transaction_period_start",
+      "label": "First Transaction",
+      "format": "date"
+    },
+    {
+      "component": "CreditAccountCard",
+      "field": "transaction_period_end",
+      "label": "Last Transaction",
+      "format": "date"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [222, 265],
+    "symbol": "mapTransactionStatistics"
+  }
+}

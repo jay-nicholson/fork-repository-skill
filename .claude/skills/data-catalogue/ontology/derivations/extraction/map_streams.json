@@ -1,0 +1,146 @@
+{
+  "id": "map_streams",
+  "name": "Map Streams",
+  "description": "Transforms raw transaction streams from categorizer into enriched Stream objects. Embeds full Transaction objects within each stream, computes statistics, and maps category info. Sorted by average amount descending.",
+  "steps": [
+    {
+      "id": "get_raw_streams",
+      "operation": "identity",
+      "inputs": [{ "derivation": "aggregate_streams" }],
+      "description": "Get raw streams from categorizer analysis"
+    },
+    {
+      "id": "get_transactions",
+      "operation": "identity",
+      "inputs": [{ "derivation": "map_transactions" }],
+      "description": "Get mapped transactions"
+    },
+    {
+      "id": "build_transaction_map",
+      "operation": "custom",
+      "inputs": [{ "step": "get_transactions" }],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "transactions", "type": "array", "required": true }
+          ]
+        },
+        "output_schema": {
+          "type": "map",
+          "key_type": "text",
+          "value_type": "object",
+          "description": "Map from transaction ID to Transaction object"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": ["src", "shared", "queries", "member", "map_streams.go"],
+          "lines": [107, 114],
+          "symbol": "BuildTransactionMap"
+        },
+        "description": "Create lookup map: txMap[transaction.ID] = transaction"
+      },
+      "description": "Build transaction lookup map for O(1) embedding"
+    },
+    {
+      "id": "embed_and_map",
+      "operation": "custom",
+      "inputs": [
+        { "step": "get_raw_streams" },
+        { "step": "build_transaction_map" }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            { "name": "streams", "type": "array", "required": true },
+            { "name": "txMap", "type": "map", "required": true }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Streams with embedded transactions and computed statistics"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": ["src", "shared", "queries", "member", "map_streams.go"],
+          "lines": [47, 103],
+          "symbol": "MapStreams"
+        },
+        "description": "For each stream: (1) embed Transaction objects via txMap lookup by transactionIDs, (2) map category fields, (3) pass through statistics, (4) sort by average DESC"
+      },
+      "description": "Embed transactions in streams and map fields"
+    }
+  ],
+  "output": {
+    "step": "embed_and_map",
+    "description": "Enriched streams with embedded transactions, sorted by average descending"
+  },
+  "depends_on": {
+    "derivations": ["aggregate_streams", "map_transactions"],
+    "fields": [
+      "stream.id",
+      "stream.transaction_ids",
+      "stream.group_description",
+      "stream.description",
+      "stream.direction",
+      "stream.category.name",
+      "stream.category.code",
+      "stream.category.confidence",
+      "stream.category.income_type",
+      "stream.category.source",
+      "stream.category.hem_expense_type",
+      "stream.cadence_category",
+      "stream.amount.min",
+      "stream.amount.max",
+      "stream.amount.mean",
+      "stream.amount.median",
+      "stream.amount.std_dev",
+      "stream.amount.sum",
+      "stream.status"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_streams.go"],
+    "lines": [47, 103],
+    "symbol": "MapStreams"
+  },
+  "ui_outputs": [
+    {
+      "component": "TransactionList",
+      "label": "Stream Groups",
+      "format": "text",
+      "description": "Grouped transactions by stream in TransactionList expandable rows"
+    },
+    {
+      "component": "StreamTransactionsList",
+      "label": "Embedded Transactions",
+      "format": "text",
+      "description": "Transactions embedded within stream for drill-down view"
+    }
+  ],
+  "notes": {
+    "field_mapping": {
+      "id": "id",
+      "groupDescription || description": "groupDescription",
+      "direction": "direction",
+      "category.name": "categoryName",
+      "category.code": "categoryCode",
+      "category.confidence": "categoryConfidence (truncated to 2 decimals)",
+      "category.incomeType": "categoryIncomeType",
+      "category.source": "categorySource",
+      "category.hemExpenseType": "hemCategory",
+      "cadenceCategory": "cadence",
+      "transactionIDs.length": "occurrences",
+      "amount.min": "minimum",
+      "amount.max": "maximum",
+      "amount.mean": "average",
+      "amount.median": "median",
+      "amount.stdDev": "standardDeviation",
+      "amount.sum": "sum",
+      "status": "status"
+    },
+    "sort_order": "average DESC (highest average first)",
+    "transaction_embedding": "Full Transaction objects embedded via transactionID lookup"
+  }
+}

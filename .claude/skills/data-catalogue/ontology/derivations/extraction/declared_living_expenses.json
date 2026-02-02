@@ -1,0 +1,67 @@
+{
+  "id": "declared_living_expenses",
+  "name": "Declared Living Expenses",
+  "description": "Extract and normalize living expenses from loan application to monthly amount",
+  "steps": [
+    {
+      "id": "raw_amount",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "expenses.living_amount"
+        }
+      ]
+    },
+    {
+      "id": "frequency",
+      "operation": "select",
+      "inputs": [
+        {
+          "derivation": "select_latest_loan_application"
+        },
+        {
+          "literal": "expenses.living_frequency"
+        }
+      ]
+    },
+    {
+      "id": "monthly",
+      "operation": "normalise_monthly",
+      "inputs": [
+        {
+          "step": "raw_amount"
+        },
+        {
+          "step": "frequency"
+        }
+      ]
+    }
+  ],
+  "output": {
+    "step": "monthly",
+    "unit": "AUD_monthly"
+  },
+  "depends_on": {
+    "derivations": [
+      "select_latest_loan_application"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "src",
+      "shared",
+      "queries",
+      "member",
+      "map_declared.go"
+    ],
+    "lines": [
+      26,
+      28
+    ],
+    "symbol": "MapDeclared - MonthlyLivingExpenses"
+  }
+}

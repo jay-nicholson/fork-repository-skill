@@ -1,0 +1,185 @@
+{
+  "id": "consent",
+  "name": "Consent",
+  "description": "Open banking consent record stored in OpenBanker database. Tracks user authorization for accessing banking data.",
+  "source": {
+    "type": "database",
+    "database": "openbanker",
+    "table": "consents"
+  },
+  "backend_ref": {
+    "repo": "open-banker",
+    "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+    "lines": [3, 16]
+  },
+  "fields": [
+    {
+      "name": "id",
+      "json_tag": "id",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Consent identifier - primary key",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [4, 4],
+        "field_name": "id"
+      }
+    },
+    {
+      "name": "user_id",
+      "json_tag": "userId",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "User identifier",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [5, 5],
+        "field_name": "user_id"
+      }
+    },
+    {
+      "name": "aggregator",
+      "json_tag": "aggregator",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Banking data aggregator name (e.g., Basiq, Yodlee)",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [6, 6],
+        "field_name": "aggregator"
+      }
+    },
+    {
+      "name": "starts_at",
+      "json_tag": "startsAt",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Consent start timestamp",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [7, 7],
+        "field_name": "starts_at"
+      }
+    },
+    {
+      "name": "expires_at",
+      "json_tag": "expiresAt",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": true,
+      "description": "Consent expiry timestamp",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [8, 8],
+        "field_name": "expires_at"
+      }
+    },
+    {
+      "name": "revoked_at",
+      "json_tag": "revokedAt",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Consent revocation timestamp (nullable after migration 000006)",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000006_allow_null_revoked_at_consents.up.sql"],
+        "lines": [3, 6],
+        "field_name": "revoked_at"
+      }
+    },
+    {
+      "name": "status",
+      "json_tag": "status",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Consent status (active, expired, revoked)",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [10, 10],
+        "field_name": "status"
+      }
+    },
+    {
+      "name": "aggregator_org_id",
+      "json_tag": "aggregatorOrgId",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Organization ID at the aggregator",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [11, 11],
+        "field_name": "aggregator_org_id"
+      }
+    },
+    {
+      "name": "aggregator_login_id",
+      "json_tag": "aggregatorLoginId",
+      "sql_type": "TEXT",
+      "data_type": "text",
+      "required": true,
+      "description": "Login ID at the aggregator (field name fixed in migration 000003)",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000003_fix_consent_field_name.up.sql"],
+        "lines": [3, 3],
+        "field_name": "aggregator_login_id"
+      }
+    },
+    {
+      "name": "meta",
+      "json_tag": "meta",
+      "sql_type": "JSONB",
+      "data_type": "object",
+      "required": true,
+      "description": "Additional metadata as JSONB",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [13, 13],
+        "field_name": "meta"
+      }
+    },
+    {
+      "name": "created_at",
+      "json_tag": "createdAt",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Record creation timestamp",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [14, 14],
+        "field_name": "created_at"
+      }
+    },
+    {
+      "name": "updated_at",
+      "json_tag": "updatedAt",
+      "sql_type": "TIMESTAMP",
+      "data_type": "datetime",
+      "required": false,
+      "description": "Record last updated timestamp",
+      "backend_ref": {
+        "repo": "open-banker",
+        "path": ["db", "postgres", "migrations", "000001_add_consents_table.up.sql"],
+        "lines": [15, 15],
+        "field_name": "updated_at"
+      }
+    }
+  ]
+}

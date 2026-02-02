@@ -1,0 +1,71 @@
+{
+  "id": "detected_other_income",
+  "name": "Detected Other Income",
+  "description": "Calculate monthly amount from the second highest income stream. Per MapDetected source, only ONE other income stream is tracked (not a sum of all non-primary).",
+  "steps": [
+    {
+      "id": "monthly_amount",
+      "operation": "custom",
+      "inputs": [
+        {
+          "derivation": "other_income_stream"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "stream",
+              "type": "object",
+              "required": false
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "number",
+          "unit": "AUD_monthly",
+          "nullable": true
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": [
+            "shared",
+            "queries",
+            "member",
+            "map_detected.go"
+          ],
+          "lines": [
+            48,
+            89
+          ],
+          "symbol": "calculateMonthlyAmount"
+        },
+        "description": "Convert stream amount to monthly using cadence multipliers. Returns null if no stream found."
+      }
+    }
+  ],
+  "output": {
+    "step": "monthly_amount",
+    "unit": "AUD_monthly",
+    "description": "Monthly other income from second highest income stream, or null if fewer than 2 income streams"
+  },
+  "depends_on": {
+    "derivations": [
+      "other_income_stream"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": [
+      "shared",
+      "queries",
+      "member",
+      "map_detected.go"
+    ],
+    "lines": [
+      48,
+      89
+    ],
+    "symbol": "MapDetected - otherIncome calculation"
+  }
+}

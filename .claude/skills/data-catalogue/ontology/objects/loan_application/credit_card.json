@@ -1,0 +1,25 @@
+{
+  "id": "loan_application.credit_card",
+  "name": "Loan Credit Card",
+  "description": "Credit card liability details",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [169, 171]
+  },
+  "fields": [
+    {
+      "name": "limit",
+      "json_tag": "limit",
+      "go_type": "*float64",
+      "data_type": "number",
+      "required": false,
+      "description": "Credit card limit amount",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [170, 170]
+      }
+    }
+  ]
+}

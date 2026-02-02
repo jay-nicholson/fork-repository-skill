@@ -1,0 +1,130 @@
+{
+  "id": "compute_transaction_streams",
+  "name": "Compute Transaction Streams",
+  "description": "Write-time computation that aggregates raw transactions into recurring streams. Groups transactions by (AccountID, Direction, Type, MCC, description similarity ≥0.75), computing cadence/amount statistics for each stream. Output is passed to categorize_streams for ML categorization.",
+  "steps": [
+    {
+      "id": "filter_user_accounts",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "account"
+        }
+      ],
+      "predicate": {
+        "field": "user_id",
+        "operator": "eq",
+        "value": ":user_id"
+      }
+    },
+    {
+      "id": "filter_user_transactions",
+      "operation": "filter",
+      "inputs": [
+        {
+          "model": "transaction"
+        }
+      ],
+      "predicate": {
+        "field": "user_id",
+        "operator": "eq",
+        "value": ":user_id"
+      }
+    },
+    {
+      "id": "build_streams",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "filter_user_accounts"
+        },
+        {
+          "step": "filter_user_transactions"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "accounts",
+              "type": "array",
+              "required": true
+            },
+            {
+              "name": "transactions",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "stream"
+        },
+        "source": {
+          "repo": "categorizer",
+          "path": [
+            "categorizer",
+            "analysis",
+            "analysis.go"
+          ],
+          "lines": [
+            333,
+            432
+          ],
+          "symbol": "buildStreams"
+        },
+        "description": "Groups transactions into streams by matching: AccountID, Direction, TransactionType, MerchantCategoryCode, and Jaccard similarity ≥0.75 on normalized descriptions. Calculates cadence stats (Daily/Weekly/Fortnightly/Monthly/Irregular) and amount stats (mean, median, sum) for each stream."
+      }
+    }
+  ],
+  "output": {
+    "step": "build_streams",
+    "description": "Uncategorized transaction streams with cadence and amount statistics"
+  },
+  "depends_on": {
+    "models": [
+      "account",
+      "transaction"
+    ],
+    "derivations": [
+      "filter_user_member"
+    ]
+  },
+  "source": {
+    "repo": "categorizer",
+    "path": [
+      "categorizer",
+      "analysis",
+      "analysis.go"
+    ],
+    "lines": [
+      333,
+      432
+    ],
+    "symbol": "buildStreams"
+  },
+  "notes": {
+    "trigger": "Called when GetTransactions is invoked - not a real-time derivation",
+    "stream_grouping_criteria": [
+      "AccountID - same bank account",
+      "Direction - credit or debit",
+      "TransactionType - payment type from bank",
+      "MerchantCategoryCode - MCC from bank",
+      "Description similarity - Jaccard similarity ≥0.75 on normalized descriptions"
+    ],
+    "cadence_thresholds": {
+      "Daily": "mode=1, ≥5 transactions, ≥5 days span",
+      "Weekly": "mode=7 ±1",
+      "Fortnightly": "mode=14 ±2",
+      "Monthly": "mode=30 ±2",
+      "Irregular": "none of the above"
+    },
+    "inactive_thresholds": {
+      "Daily": ">3 days",
+      "Weekly": ">14 days",
+      "Fortnightly": ">21 days",
+      "Monthly": ">45 days"
+    }
+  }
+}

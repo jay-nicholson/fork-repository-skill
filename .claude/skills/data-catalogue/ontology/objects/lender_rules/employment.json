@@ -1,0 +1,23 @@
+{
+  "id": "lender_rules.employment",
+  "name": "Employment Rules",
+  "description": "Employment type and duration eligibility checks",
+  "phase": "declared",
+  "deterministic": true,
+  "derivation_ref": "evaluate_employment_rules",
+  "lenders_with_rules": ["jacaranda", "nowfinance", "ourmoneymarket", "plenti", "wisr"],
+  "fields": [
+    {
+      "name": "employment_type",
+      "data_type": "text",
+      "required": true,
+      "description": "Employment type (full_time, part_time, casual, self_employed, etc.)"
+    },
+    {
+      "name": "employment_duration_in_months",
+      "data_type": "number",
+      "required": false,
+      "description": "Duration in current employment (months)"
+    }
+  ]
+}

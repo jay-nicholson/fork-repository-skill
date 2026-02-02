@@ -1,0 +1,37 @@
+{
+  "id": "loan_application.requested_loan",
+  "name": "Requested Loan",
+  "description": "Details of the loan being requested",
+  "fields": [
+    {
+      "name": "amount",
+      "data_type": "number",
+      "required": false,
+      "description": "Loan amount requested"
+    },
+    {
+      "name": "term_in_months",
+      "data_type": "number",
+      "required": false,
+      "description": "Loan term in months"
+    },
+    {
+      "name": "payment_frequency",
+      "data_type": "text",
+      "required": false,
+      "description": "Payment frequency"
+    },
+    {
+      "name": "purpose",
+      "data_type": "text",
+      "required": false,
+      "description": "Purpose of the loan"
+    },
+    {
+      "name": "purpose_other_reason",
+      "data_type": "text",
+      "required": false,
+      "description": "Additional details about loan purpose"
+    }
+  ]
+}

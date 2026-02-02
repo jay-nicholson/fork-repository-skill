@@ -1,0 +1,113 @@
+{
+  "id": "map_credit_enquiries",
+  "name": "Map Credit Enquiries",
+  "description": "Transforms raw credit bureau enquiries into portal API format. Maps field names from ports.CreditEnquiry to queries.CreditEnquiry, computes isSacc flag via helper function, and sorts by date descending (most recent first).",
+  "steps": [
+    {
+      "id": "get_enquiries",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_credit_enquiries"
+        }
+      ],
+      "description": "Get raw credit enquiries for user"
+    },
+    {
+      "id": "map_compute_sacc_and_sort",
+      "operation": "custom",
+      "inputs": [
+        {
+          "step": "get_enquiries"
+        }
+      ],
+      "custom": {
+        "input_schema": {
+          "fields": [
+            {
+              "name": "enquiries",
+              "type": "array",
+              "required": true
+            }
+          ]
+        },
+        "output_schema": {
+          "type": "array",
+          "item_type": "object",
+          "description": "Mapped enquiries with isSacc flag, sorted by date descending"
+        },
+        "source": {
+          "repo": "brightmatch",
+          "path": ["src", "modules", "portal", "domain", "queries", "map_credit_enquiries.go"],
+          "lines": [56, 87],
+          "symbol": "mapCreditEnquiries"
+        },
+        "description": "For each enquiry: (1) compute isSacc via isSaccProvider() helper at line 60, (2) map fields (Name→creditor, Industry→creditorType, Role→enquirerRole, Date→date, Type→type, Amount→amount), (3) sort by date DESC"
+      },
+      "description": "Map fields, compute SACC flag, and sort by date"
+    }
+  ],
+  "output": {
+    "step": "map_compute_sacc_and_sort",
+    "description": "Credit enquiries in portal API format with isSacc flag, sorted by date descending"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_credit_enquiries"],
+    "fields": [
+      "credit_enquiry.creditor_name",
+      "credit_enquiry.creditor_type",
+      "credit_enquiry.enquirer_role",
+      "credit_enquiry.enquiry_date",
+      "credit_enquiry.enquiry_type",
+      "credit_enquiry.enquiry_amount"
+    ]
+  },
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "modules", "portal", "domain", "queries", "map_credit_enquiries.go"],
+    "lines": [56, 87],
+    "symbol": "mapCreditEnquiries"
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditEnquiriesList",
+      "label": "Credit Enquiries",
+      "format": "text",
+      "description": "List of credit enquiries displayed in Summary V2 left sidebar (array of enquiry objects)"
+    },
+    {
+      "component": "CreditEnquiryCard",
+      "label": "SACC Badge",
+      "format": "boolean",
+      "description": "Red SACC badge displayed when isSacc=true"
+    }
+  ],
+  "notes": {
+    "field_mapping": {
+      "credit_enquiry.creditor_name": "creditor",
+      "credit_enquiry.creditor_type": "creditorType",
+      "credit_enquiry.enquirer_role": "enquirerRole",
+      "credit_enquiry.enquiry_date": "date",
+      "credit_enquiry.enquiry_type": "type",
+      "credit_enquiry.enquiry_amount": "amount"
+    },
+    "sacc_detection": {
+      "helper_function": "isSaccProvider(creditor, creditorType) at lines 20-54",
+      "keywords": ["sacc", "small amount credit", "payday"],
+      "known_lenders": [
+        "fundo", "nimble", "credit24", "cash converters", "moneyspot",
+        "cash bridge", "sunbow", "flash money", "swoosh", "sure cash",
+        "cash n go", "fundency", "credit corp", "wagetap", "beforepay",
+        "my pay now", "mypay", "jacaranda", "press pay", "presspay",
+        "360 finance", "handout loan", "stress less", "stressless",
+        "personal finance co", "money centre", "city finance",
+        "cash now", "cash faster", "square loan", "fair go",
+        "safe financial", "champion loans", "cash train",
+        "money3", "wallet wizard", "cash stop", "ferratum",
+        "cigno", "sunshine loans"
+      ]
+    },
+    "sort_order": "date DESC (most recent first)",
+    "frontend_filter": "CreditEnquiriesList additionally filters to last 12 months"
+  }
+}

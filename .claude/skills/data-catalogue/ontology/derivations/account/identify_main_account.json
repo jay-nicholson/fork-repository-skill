@@ -1,0 +1,94 @@
+{
+  "id": "identify_main_account",
+  "name": "Identify Main Account",
+  "description": "Determines if an account is the user's main account by comparing account.id with user_transaction_analysis.main_financial_institution_account_id",
+  "steps": [
+    {
+      "id": "get_account",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_accounts"
+        }
+      ],
+      "description": "Get user's filtered accounts"
+    },
+    {
+      "id": "get_analysis",
+      "operation": "identity",
+      "inputs": [
+        {
+          "derivation": "filter_user_transactions"
+        }
+      ],
+      "description": "Get user's latest transaction analysis"
+    },
+    {
+      "id": "get_account_id",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_account"
+        },
+        {
+          "literal": "id"
+        }
+      ],
+      "description": "Extract account.id"
+    },
+    {
+      "id": "get_main_account_id",
+      "operation": "select",
+      "inputs": [
+        {
+          "step": "get_analysis"
+        },
+        {
+          "literal": "main_financial_institution_account_id"
+        }
+      ],
+      "description": "Extract main_financial_institution_account_id from analysis"
+    },
+    {
+      "id": "compare",
+      "operation": "equals",
+      "inputs": [
+        {
+          "step": "get_account_id"
+        },
+        {
+          "step": "get_main_account_id"
+        }
+      ],
+      "description": "Compare account.id == main_financial_institution_account_id"
+    }
+  ],
+  "output": {
+    "step": "compare",
+    "description": "True if account.id matches main_financial_institution_account_id"
+  },
+  "depends_on": {
+    "derivations": ["filter_user_accounts", "filter_user_transactions"],
+    "fields": [
+      "account.id",
+      "user_transaction_analysis.main_financial_institution_account_id"
+    ]
+  },
+  "outputs_to": {
+    "models": ["portal_account"],
+    "fields": ["portal_account.is_main_account"]
+  },
+  "ui_outputs": [
+    {
+      "component": "CreditAccountCard",
+      "label": "Main Account",
+      "format": "boolean"
+    }
+  ],
+  "source": {
+    "repo": "brightmatch",
+    "path": ["src", "shared", "queries", "member", "map_accounts.go"],
+    "lines": [171, 174],
+    "symbol": "MapAccounts.isMainAccount"
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "id": "loan_application.passport",
+  "name": "Loan Passport",
+  "description": "Passport details for identity verification",
+  "backend_ref": {
+    "repo": "brightmatch",
+    "path": ["shared", "ports", "loan_applications.go"],
+    "lines": [108, 111]
+  },
+  "fields": [
+    {
+      "name": "passport_country",
+      "json_tag": "passportCountry",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Country that issued the passport",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [109, 109]
+      }
+    },
+    {
+      "name": "passport_number",
+      "json_tag": "passportNumber",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Passport number (de-identified)",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [110, 110]
+      }
+    },
+    {
+      "name": "expiry_date",
+      "json_tag": "expiryDate",
+      "go_type": "*string",
+      "data_type": "text",
+      "required": false,
+      "description": "Passport expiry date",
+      "backend_ref": {
+        "repo": "brightmatch",
+        "path": ["shared", "ports", "loan_applications.go"],
+        "lines": [113, 113]
+      }
+    }
+  ]
+}
