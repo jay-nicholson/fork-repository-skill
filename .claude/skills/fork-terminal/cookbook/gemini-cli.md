@@ -12,6 +12,6 @@ FAST_MODEL: gemini-2.5-flash
 ## Instructions
 
 - Before executing the command, run `gemini --help` to understand the command and its options.
-- Always use interactive mode with the -i flag as the last flag, right before the prompt (e.g., `gemini --model gemini-2.5-flash -y -i "prompt here"`)
+- Always use interactive mode with the -i flag as the last flag, right before the prompt (e.g., `gemini --model gemini-2.5-flash -i "prompt here"`)
 - For the --model argument, use the DEFAULT_MODEL if not specified. If 'fast' is requested, use the FAST_MODEL. If 'heavy' is requested, use the HEAVY_MODEL.
 - Never run with `--yolo`, `-y`, or similar permission bypass flags
