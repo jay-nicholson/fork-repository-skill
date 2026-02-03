@@ -1,198 +1,231 @@
-# Fork Terminal Skill
-> A simple skill you can use to fork your agentic coding tools to a new terminal window.
->
-> Why? To offload context (delegate), to branch work, to parallelize work, to run the same command against different tools + models, and more.
->
-> Check out this [YouTube video](https://youtu.be/X2ciJedw2vU) where we build this skill from scratch.
+# WeMoney Agent Orchestrator
 
-<img src="images/fork-terminal.png" alt="Fork Terminal Skill" width="800">
+> An agent orchestration system that coordinates AI agents across 50+ services with mandatory human oversight.
 
-A [Claude Code](https://docs.anthropic.com/en/docs/claude-code) skill that enables AI agents to spawn new terminal windows on demand. This skill extends Claude Code's capabilities to launch additional terminal sessions—including other AI coding assistants like Claude Code, Codex CLI, and Gemini CLI—in parallel terminals.
+**Status:** `local` (not yet promoted to we-money org)
 
-## Requirements
+---
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
-- [Gemini CLI](https://github.com/google-gemini/gemini-cli)
-- [Codex CLI](https://github.com/openai/codex)
+## The North Star
 
-## What is a Claude Code Skill?
+> "Which members should get a consolidation offer today and what should it say?"
 
-Claude Code skills are **modular, context-aware capabilities** that extend what Claude can do. Unlike slash commands (which require explicit `/command` invocation), skills are **automatically discovered and invoked** by Claude when user requests match the skill's description.
+This question requires:
+- **Ontology** — Member → Goal → FinancialProfile → LenderCriteria → Offer
+- **Context** — Business rules, lender criteria, approval thresholds
+- **Tools** — Redshift query, notification trigger, email generation
+- **Permission** — Human confirms before sending
 
-Skills live in `.claude/skills/` directories and consist of:
-- A `SKILL.md` file defining triggers, instructions, and workflow
-- Supporting files (scripts, templates, documentation)
+This is the shift from retrieval to action—with human oversight.
 
-When you say something like "fork terminal to run tests with Claude Code", Claude automatically detects the matching skill, reads the instructions, and executes the workflow.
-
-## Purpose
-
-This skill allows you to:
-- **Spawn parallel AI agents** in separate terminal windows
-- **Run raw CLI commands** in new terminals
-- **Pass conversation context** to forked agents (summary mode)
-
-This is useful when you want Claude to delegate work to another agent running independently, or when you need to run long-running commands in a separate terminal.
-
-## Supported Tools
-
-| Tool            | Trigger Examples                      | Default Model          |
-| --------------- | ------------------------------------- | ---------------------- |
-| **Claude Code** | "fork terminal use claude code to..." | `opus`                 |
-| **Codex CLI**   | "fork terminal use codex to..."       | `gpt-5.1-codex-max`    |
-| **Gemini CLI**  | "fork terminal use gemini to..."      | `gemini-3-pro-preview` |
-| **Raw CLI**     | "fork terminal run ffmpeg..."         | N/A                    |
-
-### Model Modifiers
-
-Each agentic tool supports model selection:
-- **Default**: Uses the tool's default model
-- **"fast"**: Uses a lighter, faster model (e.g., `haiku`, `gpt-5.1-codex-mini`, `gemini-2.5-flash`)
-- **"heavy"**: Uses the most capable model
-
-## Usage Examples
-
-### Examples you can run NOW
-
-These examples work against this codebase. Generated files go to `temp/`.
-
-**Claude Code**
-```
-# Analyze the skill architecture and save a report
-"fork terminal use claude code to analyze SKILL.md and write a summary to temp/skill-analysis.md"
-
-# Add Linux support to fork_terminal.py
-"fork terminal use claude code to add Linux support to tools/fork_terminal.py, save changes to temp/fork_terminal_linux.py"
-
-# Generate documentation for the Python tool
-"fork terminal use claude code fast to read tools/fork_terminal.py and generate docstrings, save to temp/fork_terminal_documented.py"
-```
-
-**Codex CLI**
-```
-# Review the cookbook structure
-"fork terminal use codex to review cookbook/*.md and write suggestions to temp/codex-cookbook-review.md"
-
-# Generate a test file for the fork tool
-"fork terminal use codex to read tools/fork_terminal.py and generate pytest tests, save to temp/test_fork_terminal.py"
-
-# Analyze the SKILL.md workflow
-"fork terminal use codex fast to analyze SKILL.md and explain the workflow in temp/workflow-explained.md"
-```
-
-**Gemini CLI**
-```
-# Document the skill's purpose
-"fork terminal use gemini to read README.md and SKILL.md, write a one-pager summary to temp/gemini-summary.md"
-
-# Suggest new cookbook entries
-"fork terminal use gemini to review cookbook/ and suggest a new tool integration, save to temp/new-cookbook-idea.md"
-
-# Analyze cross-platform support
-"fork terminal use gemini fast to analyze tools/fork_terminal.py and recommend Linux implementation, save to temp/linux-recommendations.md"
-```
-
-**Raw CLI**
-```
-# List all skill files
-"new terminal: find .claude/skills -name '*.md' | head -20"
-
-# Watch for file changes
-"fork terminal: watch -n 2 'ls -la .claude/skills/fork-terminal/'"
-```
-
-**Multi-Agent Combinations**
-```
-# Fork all three agents to review different aspects of the codebase
-"fork terminal use claude code to review tools/fork_terminal.py and save analysis to temp/claude-tool-review.md,
- then fork terminal use codex to review SKILL.md and save analysis to temp/codex-skill-review.md,
- then fork terminal use gemini to review cookbook/*.md and save analysis to temp/gemini-cookbook-review.md"
-
-# Race all three agents on the same task
-"fork three terminals: claude code, codex, and gemini - each should read README.md and write improvement suggestions to temp/<agent>-readme-suggestions.md"
-
-# Parallel documentation generation
-"fork terminal use claude code to document tools/fork_terminal.py to temp/claude-docs.md,
- fork terminal use codex to document SKILL.md to temp/codex-docs.md,
- fork terminal use gemini to document the cookbook/ files to temp/gemini-docs.md"
-```
-
-**With Conversation Summary (Context Handoff)**
-```
-# Hand off your current conversation context to a new Claude Code agent
-"fork terminal use claude code to request a new plan in temp/specs/<relevant-name>.md that details a net new cookbook file for a new agentic coding tool, summarize work so far"
-
-# Delegate a subtask with full context to Gemini
-"fork terminal use gemini to implement temp/specs/add-linux-support.md that details how to add Linux support to the fork terminal skill, include summary"
-```
-
-### Examples you can run later
-
-These examples demonstrate usage patterns for other projects.
-
-```
-# Launch Claude Code for a refactor task
-"fork terminal use claude code to refactor the auth module"
-
-# Use a faster model for quick fixes
-"fork terminal use claude code fast to fix the typo in utils.py"
-
-# Launch Gemini CLI for test generation
-"fork terminal use gemini to write tests for the API"
-
-# Run a dev server in a new terminal
-"create a new terminal to run npm run dev"
-
-# Hand off context to a new agent
-"fork terminal use claude code to implement the feature we discussed, summarize work so far"
-```
-
-## How It Works
-
-1. **Trigger Detection**: Claude detects phrases like "fork terminal", "new terminal", or "fork session"
-2. **Cookbook Selection**: Based on the requested tool, Claude reads the appropriate cookbook (e.g., `claude-code.md`)
-3. **Command Construction**: Claude builds the command with proper flags (interactive mode, model selection, permission bypasses)
-4. **Terminal Spawn**: The `fork_terminal.py` script opens a new terminal window and executes the command
+---
 
 ## Architecture
 
 ```
-.claude/skills/fork-terminal/
-├── SKILL.md                    # Skill definition and workflow
-├── cookbook/
-│   ├── cli-command.md          # Raw CLI instructions
-│   ├── claude-code.md          # Claude Code agent instructions
-│   ├── codex-cli.md            # Codex CLI instructions
-│   └── gemini-cli.md           # Gemini CLI instructions
-├── prompts/
-│   └── fork_summary_user_prompt.md  # Template for context handoff
-└── tools/
-    └── fork_terminal.py        # Cross-platform terminal spawner
+Model (Ontology)     →  What exists: Objects, Properties, Links
+Context (Knowledge)  →  Business rules, tribal knowledge, service docs
+Tool (Connectors)    →  GitHub, Slack, Redshift, ClickUp
+Prompt (Skills)      →  Agent instructions per domain
 ```
 
-## Platform Support
+### Skills
 
-| Platform    | Status              | Method                     |
-| ----------- | ------------------- | -------------------------- |
-| **macOS**   | Supported           | AppleScript → Terminal.app |
-| **Windows** | Supported           | `cmd /k` via `start`       |
-| **Linux**   | Not yet implemented | —                          |
+```
+.claude/skills/
+├── fork-terminal/       # Spawn parallel agents ✓
+├── data-catalogue/      # Ontology management ✓
+├── orchestrator/        # Central coordination (planned)
+└── services/
+    ├── brightmatch/     # Loan matching service (planned)
+    └── ...              # 50+ services
+```
+
+---
+
+## Fork Terminal Skill
+
+Spawn new terminal windows with AI coding agents or raw CLI commands. Useful for delegating work to parallel agents.
+
+### Supported Tools
+
+| Tool | Example | Default Model |
+|------|---------|---------------|
+| Claude Code | `fork terminal use claude code to...` | opus |
+| Codex CLI | `fork terminal use codex to...` | (configurable) |
+| Gemini CLI | `fork terminal use gemini to...` | (configurable) |
+| Raw CLI | `fork terminal run npm test` | N/A |
+
+### Context Handoff
+
+Pass conversation history to forked agents:
+
+```
+fork terminal use claude code to implement the auth module, summarize work so far
+```
+
+### Platform Support
+
+| Platform | Status |
+|----------|--------|
+| macOS | Supported (AppleScript → Terminal.app) |
+| Windows | Supported (cmd /k) |
+| Linux | Not yet implemented |
+
+---
+
+## Data Catalogue
+
+Two-layer ontology architecture synced from `we-money/brightmatch-data-catalogue`:
+
+```
+ENTITIES (enriched)     ← Agents interact here
+└─ member.json          ← Source + derivations combined
+
+SOURCES (raw)           ← Synced from data catalogue
+└─ member/_root.json    ← DB table schema
+
+DERIVATIONS (raw)       ← Synced from data catalogue
+└─ serviceability/      ← Computed transformations
+```
+
+### Sync Commands
+
+```bash
+# Pull sources + derivations from remote
+./scripts/sync/sync-data-catalogue.sh --full
+
+# Check for drift against remote
+./scripts/sync/check-drift.sh
+
+# Validate local ontology
+./scripts/sync/validate-local.sh
+```
+
+---
+
+## Permission Model
+
+All operations require appropriate oversight:
+
+| Level | Operations |
+|-------|------------|
+| **SAFE** | Read, search, test, document, query ontology |
+| **BATCH_CONFIRM** | Deploy staging, create PRs, sync |
+| **CONFIRM_EACH** | Terraform, AWS, production, databases |
+
+---
+
+## Repository Structure
+
+```
+wemoney-orchestrator/
+├── CLAUDE.md                    # Orchestrator memory
+├── .claude/
+│   ├── skills/
+│   │   ├── fork-terminal/       # Agent spawning
+│   │   ├── data-catalogue/      # Ontology management
+│   │   └── services/            # Per-service contexts
+│   └── commands/
+├── scripts/
+│   └── sync/                    # Deterministic sync scripts
+├── docs/
+│   └── plans/                   # Decision trail
+├── worktrees/                   # Cloned services (gitignored)
+└── loose_files/                 # Reference materials
+```
+
+---
+
+## Roadmap
+
+### Phase 1: Vertical Slice ✓
+- [x] Fork terminal skill
+- [x] Data catalogue sync infrastructure
+- [x] CLAUDE.md orchestrator memory
+
+### Phase 2: Data Layer
+- [x] Sync scripts (sources + derivations)
+- [x] Manifest-based drift detection
+- [ ] Validation pipeline
+- [ ] Entity enrichment (sources + derivations merged)
+
+### Phase 3: Service Coverage
+- [ ] Orchestrator skill (central coordination)
+- [ ] Brightmatch service skill
+- [ ] wemoney-backend service skill
+- [ ] Expand to remaining services
+
+### Phase 4: Connectors
+- [x] ClickUp (MCP)
+- [ ] Slack
+- [ ] Redshift
+- [ ] Honeycomb
+- [ ] GitHub Actions
+
+---
 
 ## Installation
 
-Copy the `.claude/skills/fork-terminal/` directory to your project's `.claude/skills/` folder, or to `~/.claude/skills/` for personal use across all projects.
+1. Copy `.claude/skills/` to your project or `~/.claude/skills/`
+2. Copy `scripts/sync/` if using data catalogue features
+3. Set up `.mcp.json` for connector integrations
+4. Run `/install` for onboarding checks
 
-## Improvements
+---
 
-Ideas for future enhancements:
+## Key Concepts
 
-- **Focus spawned windows** - Bring new terminal windows to front automatically, or keep them in background based on user preference
-- **More agentic coding tools** - Add cookbooks for OpenCode, and other agentic coding tools.
-- **Whatever else you can think of** - Feel free to fork the terminal fork skill and make it your own.
+### Ontology vs Data Catalogue
 
-## Master **Agentic Coding**
-> Prepare for the future of software engineering
+> "A data catalogue says: 'This field is usr_crd_scr, it's an integer.'
+> An ontology says: 'This represents a Member's creditworthiness, derived from credit bureau data, updated monthly, predicting loan approval probability.'"
 
-Learn tactical agentic coding patterns with [Tactical Agentic Coding](https://agenticengineer.com/tactical-agentic-coding?y=frktskl)
+We're building an ontology—not just schema documentation.
 
-Follow the [IndyDevDan YouTube channel](https://www.youtube.com/@indydevdan) to improve your agentic coding advantage.
+### The Mary Journey
+
+1. Mary downloads WeMoney after seeing an ad
+2. She sets debt consolidation as her goal
+3. Her CDR data shows 82% credit utilisation
+4. System identifies her as high-intent, approvable, not yet converted
+5. She receives a personalised push with 3 matching lenders
+6. She applies, gets approved, leaves a testimonial
+7. That testimonial feeds the next ad cycle
+
+**This is the flywheel.** The orchestrator enables it.
+
+### Ralph Loop
+
+The core pattern for ontology maintenance:
+
+```
+EXPLORE → UPDATE → VALIDATE
+```
+
+---
+
+## References
+
+- [Fork Terminal Demo](https://youtu.be/X2ciJedw2vU) — Building the skill from scratch
+- [Claude Code Docs](https://docs.anthropic.com/en/docs/claude-code)
+- `docs/plans/001-orchestrator-system.md` — Full implementation plan
+- `docs/plans/002-data-catalogue-sync.md` — Data layer details
+- `loose_files/full_doc.md` — Ontology thinking (Palantir patterns)
+
+---
+
+## Contributing
+
+This repo preserves tribal knowledge through deliberate commits:
+
+```
+<type>(<scope>): <description>
+
+Types: feat, fix, docs, refactor, test, sync
+Scopes: orchestrator, data-catalogue, brightmatch, fork-terminal
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+```
+
+Every commit should be meaningful enough that an agent reading `git log --oneline` can understand the project evolution.
